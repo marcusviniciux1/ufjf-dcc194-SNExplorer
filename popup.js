@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const categoryNameInput = document.getElementById("categoryNameInput");
 
   let currentEditingInstance = null;
+  let allInstances = [];
 
   // Abrir modal para adicionar item
   function openAddItemModal(instance) {
@@ -82,6 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
     itemNameInput.value = "";
     itemLinkInput.value = "";
     currentEditingInstance = null;
+    // Restaurar comportamento original do botão de salvar
+    saveItemButton.textContent = "Salvar";
+    saveItemButton.onclick = originalSaveItem;
   }
 
   // Abrir modal para editar categoria
@@ -99,6 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Eventos dos botões de adicionar item
+  const originalSaveItem = saveItemButton.onclick;
+
   saveItemButton.addEventListener("click", () => {
     const itemName = itemNameInput.value.trim();
     const itemLink = itemLinkInput.value.trim();
@@ -131,8 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
   cancelCategoryButton.addEventListener("click", closeEditCategoryModal);
 
   // Função para renderizar as instâncias na UI
-  let allInstances = [];
-
   function renderInstances() {
     const instancesContainer = document.getElementById("instancesContainer");
     // Limpar conteúdo atual
@@ -248,15 +252,130 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // Função para restaurar o comportamento original do botão de salvar item
-  const originalSaveItem = saveItemButton.onclick;
-
   // Função para adicionar instâncias à UI
   function addInstanceToUI(instance) {
     allInstances.push(instance);
     saveInstances(allInstances);
     renderInstances();
   }
+
+  // Função para realizar a busca na página KnowNow
+  async function performSearch(searchTerm) {
+    const loadingIndicator = document.getElementById("loading");
+    const resultsContainer = document.getElementById("results");
+    loadingIndicator.style.display = "block";
+    resultsContainer.innerHTML = "";
+
+    try {
+      // Abre uma nova aba com a URL de busca
+      const query = encodeURIComponent(searchTerm);
+      const searchUrl = `https://servicenowguru.com/?s=${query}`;
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: extractSearchResults,
+      });
+    } catch (error) {
+      console.error("Erro ao realizar busca:", error);
+      resultsContainer.innerHTML = "<p>Erro ao buscar resultados.</p>";
+    } finally {
+      loadingIndicator.style.display = "none";
+    }
+  }
+
+  // Função para extrair resultados da página de busca
+  function extractSearchResults() {
+    const results = [];
+    const articles = document.querySelectorAll(
+      "article.fusion-post-medium-alternate"
+    );
+
+    articles.forEach((article, index) => {
+      if (index >= 5) return; // Limitar aos 5 primeiros resultados
+
+      const titleElement = article.querySelector("h2.entry-title a");
+      const dateElement = article.querySelector(
+        ".fusion-single-line-meta span:nth-of-type(3)"
+      );
+      let descriptionElement = article.querySelector(
+        ".fusion-post-content-container p:nth-of-type(2)"
+      );
+
+      if (!descriptionElement || !descriptionElement.textContent.trim()) {
+        descriptionElement = article.querySelector(
+          ".fusion-post-content-container p"
+        );
+      }
+
+      const title = titleElement
+        ? titleElement.textContent.trim()
+        : "Título não encontrado";
+      const href = titleElement ? titleElement.href : "#";
+      const date = dateElement
+        ? dateElement.textContent.trim()
+        : "Data não encontrada";
+      const description = descriptionElement
+        ? descriptionElement.textContent.trim()
+        : "Descrição não encontrada";
+
+      results.push({ title, href, date, description });
+    });
+
+    // Envia os resultados de volta para o popup
+    chrome.runtime.sendMessage({ action: "searchResults", results });
+  }
+
+  // Listener para receber resultados da busca
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "searchResults") {
+      const resultsContainer = document.getElementById("results");
+      resultsContainer.innerHTML = "";
+
+      if (message.results.length === 0) {
+        resultsContainer.innerHTML = "<p>Nenhum resultado encontrado.</p>";
+        return;
+      }
+
+      message.results.forEach((result) => {
+        const resultDiv = document.createElement("div");
+        resultDiv.classList.add("result");
+
+        const title = document.createElement("h3");
+        const titleLink = document.createElement("a");
+        titleLink.href = result.href;
+        titleLink.textContent = result.title;
+        titleLink.target = "_blank";
+        title.appendChild(titleLink);
+
+        const date = document.createElement("p");
+        date.textContent = result.date;
+
+        const description = document.createElement("p");
+        description.textContent = result.description;
+
+        resultDiv.appendChild(title);
+        resultDiv.appendChild(date);
+        resultDiv.appendChild(description);
+
+        resultsContainer.appendChild(resultDiv);
+      });
+    }
+  });
+
+  // Evento de submissão do formulário de busca
+  const searchForm = document.getElementById("searchForm");
+  searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const searchTerm = document.getElementById("searchTerm").value.trim();
+    if (searchTerm) {
+      performSearch(searchTerm);
+    } else {
+      alert("Por favor, insira um termo de busca.");
+    }
+  });
 
   // Carregar instâncias ao iniciar
   loadInstances((instances) => {

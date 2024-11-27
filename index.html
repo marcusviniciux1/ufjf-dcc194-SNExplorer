@@ -20,7 +20,23 @@
 
     <div id="documentationPage" style="display: none">
       <h1>KnowNow</h1>
-      <p>Conteúdo da página KnowNow.</p>
+      <p>
+        Digite um termo de busca para encontrar artigos e informações relevantes
+        no ServiceNow Guru.
+      </p>
+      <form id="searchForm">
+        <input
+          type="text"
+          id="searchTerm"
+          placeholder="Digite o termo de busca"
+          required
+        />
+        <button type="submit" id="searchButton">Buscar</button>
+      </form>
+      <div id="loading" style="display: none">
+        <p>Buscando resultados...</p>
+      </div>
+      <div id="results"></div>
     </div>
 
     <div id="instancesPage" style="display: none">
