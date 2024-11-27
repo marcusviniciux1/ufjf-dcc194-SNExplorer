@@ -28,6 +28,40 @@
       <p>Conteúdo da página de instâncias.</p>
     </div>
 
+    <div id="addItemModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h2>Adicionar Item</h2>
+        <input
+          type="text"
+          id="itemNameInput"
+          placeholder="Nome do Item"
+          required
+        />
+        <input
+          type="text"
+          id="itemLinkInput"
+          placeholder="URL do Item"
+          required
+        />
+        <button id="saveItemButton">Salvar</button>
+        <button id="cancelItemButton">Cancelar</button>
+      </div>
+    </div>
+
+    <div id="editCategoryModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h2>Editar Categoria</h2>
+        <input
+          type="text"
+          id="categoryNameInput"
+          placeholder="Nome da Categoria"
+          required
+        />
+        <button id="saveCategoryButton">Salvar</button>
+        <button id="cancelCategoryButton">Cancelar</button>
+      </div>
+    </div>
+
     <script src="popup.js"></script>
   </body>
 </html>
