@@ -68,8 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const itemLinkInput = document.getElementById("itemLinkInput");
   const categoryNameInput = document.getElementById("categoryNameInput");
 
+  let currentEditingInstance = null;
+
   // Abrir modal para adicionar item
-  function openAddItemModal() {
+  function openAddItemModal(instance) {
+    currentEditingInstance = instance;
     addItemModal.style.display = "block";
   }
 
@@ -78,26 +81,32 @@ document.addEventListener("DOMContentLoaded", () => {
     addItemModal.style.display = "none";
     itemNameInput.value = "";
     itemLinkInput.value = "";
+    currentEditingInstance = null;
   }
 
   // Abrir modal para editar categoria
-  function openEditCategoryModal(currentName) {
+  function openEditCategoryModal(instance) {
+    currentEditingInstance = instance;
     editCategoryModal.style.display = "block";
-    categoryNameInput.value = currentName;
+    categoryNameInput.value = instance.name;
   }
 
   // Fechar modal para editar categoria
   function closeEditCategoryModal() {
     editCategoryModal.style.display = "none";
     categoryNameInput.value = "";
+    currentEditingInstance = null;
   }
 
   // Eventos dos botões de adicionar item
   saveItemButton.addEventListener("click", () => {
     const itemName = itemNameInput.value.trim();
     const itemLink = itemLinkInput.value.trim();
-    if (itemName && itemLink) {
-      console.log("Salvar Item:", itemName, itemLink);
+    if (itemName && itemLink && currentEditingInstance) {
+      const newItem = { name: itemName, link: itemLink };
+      currentEditingInstance.items.push(newItem);
+      saveInstances(allInstances);
+      renderInstances();
       closeAddItemModal();
     } else {
       alert("Por favor, preencha todos os campos.");
@@ -109,8 +118,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Eventos dos botões de editar categoria
   saveCategoryButton.addEventListener("click", () => {
     const categoryName = categoryNameInput.value.trim();
-    if (categoryName) {
-      console.log("Salvar Categoria:", categoryName);
+    if (categoryName && currentEditingInstance) {
+      currentEditingInstance.name = categoryName;
+      saveInstances(allInstances);
+      renderInstances();
       closeEditCategoryModal();
     } else {
       alert("Por favor, preencha o nome da categoria.");
@@ -119,7 +130,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cancelCategoryButton.addEventListener("click", closeEditCategoryModal);
 
+  // Função para renderizar as instâncias na UI
+  let allInstances = [];
+
+  function renderInstances() {
+    const instancesContainer = document
+      .getElementById("instancesPage")
+      .querySelector("p");
+    // Limpar conteúdo atual
+    instancesContainer.innerHTML = "";
+
+    allInstances.forEach((instance, index) => {
+      const instanceDiv = document.createElement("div");
+      instanceDiv.classList.add("instance");
+
+      const instanceHeader = document.createElement("h3");
+      instanceHeader.textContent = instance.name;
+
+      const editButton = document.createElement("button");
+      editButton.textContent = "Editar Categoria";
+      editButton.addEventListener("click", () =>
+        openEditCategoryModal(instance)
+      );
+
+      instanceHeader.appendChild(editButton);
+      instanceDiv.appendChild(instanceHeader);
+
+      const itemsList = document.createElement("ul");
+      instance.items.forEach((item) => {
+        const itemLi = document.createElement("li");
+        const itemLink = document.createElement("a");
+        itemLink.href = item.link;
+        itemLink.textContent = item.name;
+        itemLink.target = "_blank";
+
+        itemLi.appendChild(itemLink);
+        itemsList.appendChild(itemLi);
+      });
+
+      instanceDiv.appendChild(itemsList);
+
+      const addItemBtn = document.createElement("button");
+      addItemBtn.textContent = "Adicionar Item";
+      addItemBtn.addEventListener("click", () => openAddItemModal(instance));
+
+      instanceDiv.appendChild(addItemBtn);
+      instancesContainer.appendChild(instanceDiv);
+    });
+  }
+
+  // Carregar instâncias ao iniciar
   loadInstances((instances) => {
-    console.log("Instâncias disponíveis:", instances);
+    allInstances = instances;
+    renderInstances();
   });
 });
