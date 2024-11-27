@@ -134,11 +134,14 @@ document.addEventListener("DOMContentLoaded", () => {
   let allInstances = [];
 
   function renderInstances() {
-    const instancesContainer = document
-      .getElementById("instancesPage")
-      .querySelector("p");
+    const instancesContainer = document.getElementById("instancesContainer");
     // Limpar conteúdo atual
     instancesContainer.innerHTML = "";
+
+    if (allInstances.length === 0) {
+      instancesContainer.innerHTML = "<p>Nenhuma instância adicionada.</p>";
+      return;
+    }
 
     allInstances.forEach((instance, index) => {
       const instanceDiv = document.createElement("div");
@@ -153,30 +156,106 @@ document.addEventListener("DOMContentLoaded", () => {
         openEditCategoryModal(instance)
       );
 
-      instanceHeader.appendChild(editButton);
-      instanceDiv.appendChild(instanceHeader);
-
-      const itemsList = document.createElement("ul");
-      instance.items.forEach((item) => {
-        const itemLi = document.createElement("li");
-        const itemLink = document.createElement("a");
-        itemLink.href = item.link;
-        itemLink.textContent = item.name;
-        itemLink.target = "_blank";
-
-        itemLi.appendChild(itemLink);
-        itemsList.appendChild(itemLi);
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Deletar Categoria";
+      deleteButton.style.marginLeft = "10px";
+      deleteButton.addEventListener("click", () => {
+        if (confirm(`Deseja deletar a categoria "${instance.name}"?`)) {
+          allInstances.splice(index, 1);
+          saveInstances(allInstances);
+          renderInstances();
+        }
       });
 
-      instanceDiv.appendChild(itemsList);
+      instanceHeader.appendChild(editButton);
+      instanceHeader.appendChild(deleteButton);
+      instanceDiv.appendChild(instanceHeader);
+
+      if (instance.items.length > 0) {
+        const itemsList = document.createElement("ul");
+        instance.items.forEach((item, itemIndex) => {
+          const itemLi = document.createElement("li");
+
+          const itemLink = document.createElement("a");
+          itemLink.href = item.link;
+          itemLink.textContent = item.name;
+          itemLink.target = "_blank";
+
+          const editItemButton = document.createElement("button");
+          editItemButton.textContent = "Editar";
+          editItemButton.style.marginLeft = "10px";
+          editItemButton.addEventListener("click", () =>
+            openEditItemModal(instance, item, itemIndex)
+          );
+
+          const deleteItemButton = document.createElement("button");
+          deleteItemButton.textContent = "X";
+          deleteItemButton.style.marginLeft = "5px";
+          deleteItemButton.addEventListener("click", () => {
+            if (confirm(`Deseja deletar o item "${item.name}"?`)) {
+              instance.items.splice(itemIndex, 1);
+              saveInstances(allInstances);
+              renderInstances();
+            }
+          });
+
+          itemLi.appendChild(itemLink);
+          itemLi.appendChild(editItemButton);
+          itemLi.appendChild(deleteItemButton);
+          itemsList.appendChild(itemLi);
+        });
+        instanceDiv.appendChild(itemsList);
+      } else {
+        const noItemsP = document.createElement("p");
+        noItemsP.textContent = "Nenhum item adicionado.";
+        instanceDiv.appendChild(noItemsP);
+      }
 
       const addItemBtn = document.createElement("button");
       addItemBtn.textContent = "Adicionar Item";
+      addItemBtn.style.marginTop = "10px";
       addItemBtn.addEventListener("click", () => openAddItemModal(instance));
 
       instanceDiv.appendChild(addItemBtn);
       instancesContainer.appendChild(instanceDiv);
     });
+  }
+
+  // Função para abrir modal de editar item
+  function openEditItemModal(instance, item, itemIndex) {
+    currentEditingInstance = { instance, item, itemIndex };
+    addItemModal.style.display = "block";
+    itemNameInput.value = item.name;
+    itemLinkInput.value = item.link;
+
+    // Alterar botão de salvar para editar
+    saveItemButton.textContent = "Salvar Alterações";
+    saveItemButton.onclick = () => {
+      const updatedName = itemNameInput.value.trim();
+      const updatedLink = itemLinkInput.value.trim();
+      if (updatedName && updatedLink) {
+        instance.items[itemIndex].name = updatedName;
+        instance.items[itemIndex].link = updatedLink;
+        saveInstances(allInstances);
+        renderInstances();
+        closeAddItemModal();
+        // Reset botão de salvar para adicionar
+        saveItemButton.textContent = "Salvar";
+        saveItemButton.onclick = originalSaveItem;
+      } else {
+        alert("Por favor, preencha todos os campos.");
+      }
+    };
+  }
+
+  // Função para restaurar o comportamento original do botão de salvar item
+  const originalSaveItem = saveItemButton.onclick;
+
+  // Função para adicionar instâncias à UI
+  function addInstanceToUI(instance) {
+    allInstances.push(instance);
+    saveInstances(allInstances);
+    renderInstances();
   }
 
   // Carregar instâncias ao iniciar
