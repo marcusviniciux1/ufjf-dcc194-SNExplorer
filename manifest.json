@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
   "name": "SN Explorer",
-  "version": "0.3",
+  "version": "0.4",
   "description": "Extensão SN Explorer inicial.",
+  "permissions": ["storage"],
   "action": {
     "default_popup": "index.html"
   },
