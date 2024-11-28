@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SN Explorer",
-  "version": "0.5",
+  "version": "0.6",
   "description": "Extensão SN Explorer com funcionalidade de busca.",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": ["https://servicenowguru.com/*"],
