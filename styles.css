@@ -27,9 +27,11 @@ nav ul li a {
   color: #fff;
   text-decoration: none;
   font-weight: bold;
+  transition: color 0.3s ease;
 }
 
 nav ul li a:hover {
+  color: #ffcc00;
   text-decoration: underline;
 }
 
@@ -175,6 +177,12 @@ button:hover {
 
 #instancesContainer .instance button {
   background-color: #17a2b8;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 #instancesContainer .instance button:hover {
