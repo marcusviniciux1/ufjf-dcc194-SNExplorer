@@ -227,3 +227,84 @@ button:hover {
   background-color: #138496;
   transform: translateY(-2px);
 }
+
+/* Página Sobre */
+#aboutPage {
+  padding: 20px;
+}
+
+#aboutPage h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#aboutPage p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #555;
+}
+
+/* Página KnowNow */
+#documentationPage {
+  padding: 20px;
+}
+
+#documentationPage h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+#documentationPage form {
+  margin-bottom: 20px;
+}
+
+#documentationPage #searchTerm {
+  font-size: 16px;
+}
+
+#documentationPage #searchButton {
+  font-size: 16px;
+  background-color: #007bff;
+}
+
+#documentationPage #searchButton:hover {
+  background-color: #0069d9;
+}
+
+#documentationPage #loading {
+  margin-bottom: 20px;
+}
+
+#documentationPage #results .result p {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Página Instâncias */
+#instancesPage {
+  padding: 20px;
+}
+
+#instancesPage h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+#instancesPage #instancesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#instancesPage #instancesContainer .instance h3 {
+  font-size: 18px;
+}
+
+#instancesPage #instancesContainer .instance ul li a {
+  font-size: 16px;
+}
+
+#instancesPage #instancesContainer .instance button {
+  font-size: 14px;
+  padding: 4px 8px;
+}
