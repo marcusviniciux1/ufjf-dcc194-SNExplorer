@@ -59,6 +59,11 @@ input[type="text"] {
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
   outline: none;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #007bff;
 }
 
 button {
@@ -87,6 +92,14 @@ button:hover {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal.active {
+  opacity: 1;
+  visibility: visible;
 }
 
 .modal-content {
@@ -96,6 +109,12 @@ button:hover {
   width: 300px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
+  transform: translateY(-50px);
+  transition: transform 0.3s ease;
+}
+
+.modal.active .modal-content {
+  transform: translateY(0);
 }
 
 .modal-content h2 {
@@ -109,6 +128,11 @@ button:hover {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.modal-content input[type="text"]:focus {
+  border-color: #007bff;
 }
 
 .modal-content button {
@@ -144,6 +168,25 @@ button:hover {
 #loading {
   text-align: center;
   color: #555;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 #results .result {
@@ -273,6 +316,7 @@ button:hover {
 
 #documentationPage #loading {
   margin-bottom: 20px;
+  display: none;
 }
 
 #documentationPage #results .result p {
