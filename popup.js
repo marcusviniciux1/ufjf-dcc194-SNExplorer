@@ -1,385 +1,315 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const aboutLink = document.getElementById("aboutPageLink");
-  const documentationLink = document.getElementById("documentationPageLink");
-  const instancesLink = document.getElementById("instancesPageLink");
+  function getElement(id) {
+    return document.getElementById(id);
+  }
 
-  const aboutPage = document.getElementById("aboutPage");
-  const documentationPage = document.getElementById("documentationPage");
-  const instancesPage = document.getElementById("instancesPage");
+  const pages = {
+    searchPage: getElement("searchPage"),
+    instancesPage: getElement("instancesPage"),
+    aboutPage: getElement("aboutPage"),
+    documentationPage: getElement("documentationPage"),
+  };
 
-  // Funções de armazenamento usando chrome.storage
+  const resultsContainer = getElement("results");
+  const loadingIndicator = getElement("loading");
+  const searchForm = getElement("searchForm");
+  const searchTermInput = getElement("searchTerm");
+
+  const addInstanceInput = getElement("addInstanceInput");
+  const addInstanceButton = getElement("addInstanceButton");
+  const instancesContainer = getElement("instancesContainer");
+
+  const addItemModal = getElement("addItemModal");
+  const overlay = getElement("overlay");
+  const itemNameInput = getElement("itemNameInput");
+  const itemLinkInput = getElement("itemLinkInput");
+  const confirmAddItemButton = getElement("confirmAddItemButton");
+  const cancelAddItemButton = getElement("cancelAddItemButton");
+
+  const editCategoryModal = getElement("editCategoryModal");
+  const categoryNameInput = getElement("categoryNameInput");
+  const confirmEditCategoryButton = getElement("confirmEditCategoryButton");
+  const cancelEditCategoryButton = getElement("cancelEditCategoryButton");
+
+  function showPage(page) {
+    Object.values(pages).forEach((p) => p.classList.remove("active"));
+    page.classList.add("active");
+  }
+
+  showPage(pages.aboutPage);
+
+  getElement("aboutPageLink").addEventListener("click", () =>
+    showPage(pages.aboutPage)
+  );
+  getElement("documentationPageLink").addEventListener("click", () =>
+    showPage(pages.documentationPage)
+  );
+  getElement("instancesPageLink").addEventListener("click", () =>
+    showPage(pages.instancesPage)
+  );
+
   function saveInstances(instances) {
     chrome.storage.local.set({ instances }, () => {
       if (chrome.runtime.lastError) {
         console.error("Erro ao salvar instâncias:", chrome.runtime.lastError);
-      } else {
-        console.log("Instâncias salvas com sucesso.");
       }
     });
   }
 
-  function loadInstances(callback) {
+  function loadInstances() {
     chrome.storage.local.get(["instances"], (result) => {
       if (chrome.runtime.lastError) {
         console.error("Erro ao carregar instâncias:", chrome.runtime.lastError);
-        callback([]);
-      } else {
-        console.log("Instâncias carregadas:", result.instances);
-        callback(result.instances || []);
+        return;
       }
+      const instances = result.instances || [];
+      instancesContainer.innerHTML = "";
+      instances.forEach(renderInstance);
     });
   }
 
-  function showPage(page) {
-    aboutPage.style.display = "none";
-    documentationPage.style.display = "none";
-    instancesPage.style.display = "none";
-    page.style.display = "block";
-  }
+  function renderInstance(instance) {
+    const instanceDiv = document.createElement("div");
+    instanceDiv.classList.add("instance");
+    instanceDiv.innerHTML = `
+          <h3>
+              ${instance.name}
+              <div style="display: flex; gap: 5px;">
+                  <button class="editCategoryButton">Editar</button>
+                  <button class="deleteButton">X</button>
+              </div>
+          </h3>
+          <div class="itemsContainer"></div>
+      `;
 
-  aboutLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    showPage(aboutPage);
-  });
+    const itemsContainer = instanceDiv.querySelector(".itemsContainer");
+    instance.items.forEach((item) =>
+      renderItem(item, instance, itemsContainer)
+    );
 
-  documentationLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    showPage(documentationPage);
-  });
+    const addItemButton = document.createElement("button");
+    addItemButton.textContent = "+";
+    addItemButton.classList.add("addItemButton");
+    addItemButton.addEventListener("click", () =>
+      openAddItemModal(instance, itemsContainer)
+    );
+    instanceDiv.appendChild(addItemButton);
 
-  instancesLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    showPage(instancesPage);
-  });
+    instanceDiv.querySelector(".deleteButton").addEventListener("click", () => {
+      if (confirm(`Deseja deletar a categoria "${instance.name}"?`)) {
+        instanceDiv.remove();
+        saveInstances(getAllInstances());
+      }
+    });
 
-  // Exibe a página "Sobre" por padrão
-  showPage(aboutPage);
-
-  // Funções para manipulação de modais
-  const addItemModal = document.getElementById("addItemModal");
-  const editCategoryModal = document.getElementById("editCategoryModal");
-
-  const saveItemButton = document.getElementById("saveItemButton");
-  const cancelItemButton = document.getElementById("cancelItemButton");
-  const saveCategoryButton = document.getElementById("saveCategoryButton");
-  const cancelCategoryButton = document.getElementById("cancelCategoryButton");
-
-  const itemNameInput = document.getElementById("itemNameInput");
-  const itemLinkInput = document.getElementById("itemLinkInput");
-  const categoryNameInput = document.getElementById("categoryNameInput");
-
-  let currentEditingInstance = null;
-  let allInstances = [];
-
-  // Abrir modal para adicionar item
-  function openAddItemModal(instance) {
-    currentEditingInstance = instance;
-    addItemModal.style.display = "block";
-  }
-
-  // Fechar modal para adicionar item
-  function closeAddItemModal() {
-    addItemModal.style.display = "none";
-    itemNameInput.value = "";
-    itemLinkInput.value = "";
-    currentEditingInstance = null;
-    // Restaurar comportamento original do botão de salvar
-    saveItemButton.textContent = "Salvar";
-    saveItemButton.onclick = originalSaveItem;
-  }
-
-  // Abrir modal para editar categoria
-  function openEditCategoryModal(instance) {
-    currentEditingInstance = instance;
-    editCategoryModal.style.display = "block";
-    categoryNameInput.value = instance.name;
-  }
-
-  // Fechar modal para editar categoria
-  function closeEditCategoryModal() {
-    editCategoryModal.style.display = "none";
-    categoryNameInput.value = "";
-    currentEditingInstance = null;
-  }
-
-  // Eventos dos botões de adicionar item
-  const originalSaveItem = saveItemButton.onclick;
-
-  saveItemButton.addEventListener("click", () => {
-    const itemName = itemNameInput.value.trim();
-    const itemLink = itemLinkInput.value.trim();
-    if (itemName && itemLink && currentEditingInstance) {
-      const newItem = { name: itemName, link: itemLink };
-      currentEditingInstance.items.push(newItem);
-      saveInstances(allInstances);
-      renderInstances();
-      closeAddItemModal();
-    } else {
-      alert("Por favor, preencha todos os campos.");
-    }
-  });
-
-  cancelItemButton.addEventListener("click", closeAddItemModal);
-
-  // Eventos dos botões de editar categoria
-  saveCategoryButton.addEventListener("click", () => {
-    const categoryName = categoryNameInput.value.trim();
-    if (categoryName && currentEditingInstance) {
-      currentEditingInstance.name = categoryName;
-      saveInstances(allInstances);
-      renderInstances();
-      closeEditCategoryModal();
-    } else {
-      alert("Por favor, preencha o nome da categoria.");
-    }
-  });
-
-  cancelCategoryButton.addEventListener("click", closeEditCategoryModal);
-
-  // Função para renderizar as instâncias na UI
-  function renderInstances() {
-    const instancesContainer = document.getElementById("instancesContainer");
-    // Limpar conteúdo atual
-    instancesContainer.innerHTML = "";
-
-    if (allInstances.length === 0) {
-      instancesContainer.innerHTML = "<p>Nenhuma instância adicionada.</p>";
-      return;
-    }
-
-    allInstances.forEach((instance, index) => {
-      const instanceDiv = document.createElement("div");
-      instanceDiv.classList.add("instance");
-
-      const instanceHeader = document.createElement("h3");
-      instanceHeader.textContent = instance.name;
-
-      const editButton = document.createElement("button");
-      editButton.textContent = "Editar Categoria";
-      editButton.addEventListener("click", () =>
-        openEditCategoryModal(instance)
+    instanceDiv
+      .querySelector(".editCategoryButton")
+      .addEventListener("click", () =>
+        openEditCategoryModal(instance, instanceDiv)
       );
 
-      const deleteButton = document.createElement("button");
-      deleteButton.textContent = "Deletar Categoria";
-      deleteButton.style.marginLeft = "10px";
-      deleteButton.addEventListener("click", () => {
-        if (confirm(`Deseja deletar a categoria "${instance.name}"?`)) {
-          allInstances.splice(index, 1);
-          saveInstances(allInstances);
-          renderInstances();
-        }
-      });
-
-      instanceHeader.appendChild(editButton);
-      instanceHeader.appendChild(deleteButton);
-      instanceDiv.appendChild(instanceHeader);
-
-      if (instance.items.length > 0) {
-        const itemsList = document.createElement("ul");
-        instance.items.forEach((item, itemIndex) => {
-          const itemLi = document.createElement("li");
-
-          const itemLink = document.createElement("a");
-          itemLink.href = item.link;
-          itemLink.textContent = item.name;
-          itemLink.target = "_blank";
-
-          const editItemButton = document.createElement("button");
-          editItemButton.textContent = "Editar";
-          editItemButton.style.marginLeft = "10px";
-          editItemButton.addEventListener("click", () =>
-            openEditItemModal(instance, item, itemIndex)
-          );
-
-          const deleteItemButton = document.createElement("button");
-          deleteItemButton.textContent = "X";
-          deleteItemButton.style.marginLeft = "5px";
-          deleteItemButton.addEventListener("click", () => {
-            if (confirm(`Deseja deletar o item "${item.name}"?`)) {
-              instance.items.splice(itemIndex, 1);
-              saveInstances(allInstances);
-              renderInstances();
-            }
-          });
-
-          itemLi.appendChild(itemLink);
-          itemLi.appendChild(editItemButton);
-          itemLi.appendChild(deleteItemButton);
-          itemsList.appendChild(itemLi);
-        });
-        instanceDiv.appendChild(itemsList);
-      } else {
-        const noItemsP = document.createElement("p");
-        noItemsP.textContent = "Nenhum item adicionado.";
-        instanceDiv.appendChild(noItemsP);
-      }
-
-      const addItemBtn = document.createElement("button");
-      addItemBtn.textContent = "Adicionar Item";
-      addItemBtn.style.marginTop = "10px";
-      addItemBtn.addEventListener("click", () => openAddItemModal(instance));
-
-      instanceDiv.appendChild(addItemBtn);
-      instancesContainer.appendChild(instanceDiv);
-    });
+    instancesContainer.appendChild(instanceDiv);
   }
 
-  // Função para abrir modal de editar item
-  function openEditItemModal(instance, item, itemIndex) {
-    currentEditingInstance = { instance, item, itemIndex };
-    addItemModal.style.display = "block";
-    itemNameInput.value = item.name;
-    itemLinkInput.value = item.link;
+  function renderItem(item, instance, itemsContainer) {
+    const itemDiv = document.createElement("div");
+    itemDiv.classList.add("item");
+    itemDiv.innerHTML = `
+          <a href="${item.link}" target="_blank">${item.name}</a>
+          <div style="display: flex; gap: 5px;">
+              <button class="editItemButton">Editar</button>
+              <button class="deleteButton">X</button>
+          </div>
+      `;
 
-    // Alterar botão de salvar para editar
-    saveItemButton.textContent = "Salvar Alterações";
-    saveItemButton.onclick = () => {
-      const updatedName = itemNameInput.value.trim();
-      const updatedLink = itemLinkInput.value.trim();
-      if (updatedName && updatedLink) {
-        instance.items[itemIndex].name = updatedName;
-        instance.items[itemIndex].link = updatedLink;
-        saveInstances(allInstances);
-        renderInstances();
-        closeAddItemModal();
-        // Reset botão de salvar para adicionar
-        saveItemButton.textContent = "Salvar";
-        saveItemButton.onclick = originalSaveItem;
+    itemDiv.querySelector(".deleteButton").addEventListener("click", () => {
+      const itemIndex = instance.items.findIndex(
+        (i) => i.name === item.name && i.link === item.link
+      );
+      if (itemIndex > -1) {
+        instance.items.splice(itemIndex, 1);
+        itemDiv.remove();
+        saveInstances(getAllInstances());
+      }
+    });
+
+    itemDiv
+      .querySelector(".editItemButton")
+      .addEventListener("click", () =>
+        openEditItemModal(item, instance, itemDiv)
+      );
+
+    itemsContainer.appendChild(itemDiv);
+  }
+
+  function getAllInstances() {
+    return Array.from(instancesContainer.querySelectorAll(".instance")).map(
+      (instanceDiv) => {
+        const name = instanceDiv
+          .querySelector("h3")
+          .childNodes[0].textContent.trim();
+        const items = Array.from(instanceDiv.querySelectorAll(".item")).map(
+          (itemDiv) => {
+            return {
+              name: itemDiv.querySelector("a").textContent.trim(),
+              link: itemDiv.querySelector("a").href,
+            };
+          }
+        );
+        return { name, items };
+      }
+    );
+  }
+
+  addInstanceButton.addEventListener("click", () => {
+    const instanceName = addInstanceInput.value.trim();
+    if (instanceName) {
+      const newInstance = { name: instanceName, items: [] };
+      renderInstance(newInstance);
+      addInstanceInput.value = "";
+      saveInstances(getAllInstances());
+    } else {
+      alert("Por favor, insira um nome para a instância.");
+    }
+  });
+
+  function openAddItemModal(instance, itemsContainer) {
+    addItemModal.classList.add("active");
+    overlay.classList.add("active");
+
+    itemNameInput.value = "";
+    itemLinkInput.value = "";
+
+    confirmAddItemButton.onclick = () => {
+      const itemName = itemNameInput.value.trim();
+      const itemLink = itemLinkInput.value.trim();
+      if (itemName && itemLink) {
+        const newItem = { name: itemName, link: itemLink };
+        instance.items.push(newItem);
+        renderItem(newItem, instance, itemsContainer);
+        saveInstances(getAllInstances());
+        closeModal(addItemModal);
       } else {
         alert("Por favor, preencha todos os campos.");
       }
     };
+
+    cancelAddItemButton.onclick = () => closeModal(addItemModal);
+    overlay.onclick = () => closeModal(addItemModal);
   }
 
-  // Função para adicionar instâncias à UI
-  function addInstanceToUI(instance) {
-    allInstances.push(instance);
-    saveInstances(allInstances);
-    renderInstances();
+  function openEditCategoryModal(instance, instanceDiv) {
+    editCategoryModal.classList.add("active");
+    overlay.classList.add("active");
+
+    categoryNameInput.value = instance.name;
+
+    confirmEditCategoryButton.onclick = () => {
+      const updatedName = categoryNameInput.value.trim();
+      if (updatedName) {
+        instance.name = updatedName;
+        instanceDiv.querySelector("h3").childNodes[0].textContent = updatedName;
+        saveInstances(getAllInstances());
+        closeModal(editCategoryModal);
+      } else {
+        alert("Por favor, insira um nome válido para a instância.");
+      }
+    };
+
+    cancelEditCategoryButton.onclick = () => closeModal(editCategoryModal);
+    overlay.onclick = () => closeModal(editCategoryModal);
   }
 
-  // Função para realizar a busca na página KnowNow
-  async function performSearch(searchTerm) {
-    const loadingIndicator = document.getElementById("loading");
-    const resultsContainer = document.getElementById("results");
-    loadingIndicator.style.display = "block";
+  function openEditItemModal(item, instance, itemDiv) {
+    addItemModal.classList.add("active");
+    overlay.classList.add("active");
+
+    itemNameInput.value = item.name;
+    itemLinkInput.value = item.link;
+
+    confirmAddItemButton.onclick = () => {
+      const updatedName = itemNameInput.value.trim();
+      const updatedLink = itemLinkInput.value.trim();
+      if (updatedName && updatedLink) {
+        item.name = updatedName;
+        item.link = updatedLink;
+        itemDiv.querySelector("a").textContent = updatedName;
+        itemDiv.querySelector("a").href = updatedLink;
+        saveInstances(getAllInstances());
+        closeModal(addItemModal);
+      } else {
+        alert("Por favor, preencha todos os campos.");
+      }
+    };
+
+    cancelAddItemButton.onclick = () => closeModal(addItemModal);
+    overlay.onclick = () => closeModal(addItemModal);
+  }
+
+  function closeModal(modal) {
+    modal.classList.remove("active");
+    overlay.classList.remove("active");
+    resetInputs(itemNameInput, itemLinkInput, categoryNameInput);
+  }
+
+  function resetInputs(...inputs) {
+    inputs.forEach((input) => (input.value = ""));
+  }
+
+  searchForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const searchTerm = searchTermInput.value.trim();
+    if (!searchTerm) return;
+
     resultsContainer.innerHTML = "";
+    loadingIndicator.style.display = "block";
 
     try {
-      // Abre uma nova aba com a URL de busca
-      const query = encodeURIComponent(searchTerm);
-      const searchUrl = `https://servicenowguru.com/?s=${query}`;
-      const [tab] = await chrome.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: extractSearchResults,
+      const response = await fetch(
+        `https://servicenowguru.com/?s=${encodeURIComponent(searchTerm)}`
+      );
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const articles = doc.querySelectorAll(
+        "article.fusion-post-medium-alternate"
+      );
+
+      articles.forEach((article, index) => {
+        if (index >= 5) return;
+
+        const titleElement = article.querySelector("h2.entry-title a");
+        const dateElement = article.querySelector(
+          ".fusion-single-line-meta span:nth-of-type(3)"
+        );
+        const descriptionElement =
+          article.querySelector(
+            ".fusion-post-content-container p:nth-of-type(2)"
+          ) || article.querySelector(".fusion-post-content-container p");
+
+        const title =
+          titleElement?.textContent.trim() || "Título não encontrado";
+        const href = titleElement?.href || "#";
+        const date = dateElement?.textContent.trim() || "Data não encontrada";
+        const description =
+          descriptionElement?.textContent.trim() || "Descrição não encontrada";
+
+        const resultDiv = document.createElement("div");
+        resultDiv.classList.add("result");
+        resultDiv.innerHTML = `
+                  <h3><a href="${href}" target="_blank">${title}</a></h3>
+                  <p>${date}</p>
+                  <p>${description}</p>
+              `;
+        resultsContainer.appendChild(resultDiv);
       });
     } catch (error) {
-      console.error("Erro ao realizar busca:", error);
       resultsContainer.innerHTML = "<p>Erro ao buscar resultados.</p>";
     } finally {
       loadingIndicator.style.display = "none";
     }
-  }
-
-  // Função para extrair resultados da página de busca
-  function extractSearchResults() {
-    const results = [];
-    const articles = document.querySelectorAll(
-      "article.fusion-post-medium-alternate"
-    );
-
-    articles.forEach((article, index) => {
-      if (index >= 5) return; // Limitar aos 5 primeiros resultados
-
-      const titleElement = article.querySelector("h2.entry-title a");
-      const dateElement = article.querySelector(
-        ".fusion-single-line-meta span:nth-of-type(3)"
-      );
-      let descriptionElement = article.querySelector(
-        ".fusion-post-content-container p:nth-of-type(2)"
-      );
-
-      if (!descriptionElement || !descriptionElement.textContent.trim()) {
-        descriptionElement = article.querySelector(
-          ".fusion-post-content-container p"
-        );
-      }
-
-      const title = titleElement
-        ? titleElement.textContent.trim()
-        : "Título não encontrado";
-      const href = titleElement ? titleElement.href : "#";
-      const date = dateElement
-        ? dateElement.textContent.trim()
-        : "Data não encontrada";
-      const description = descriptionElement
-        ? descriptionElement.textContent.trim()
-        : "Descrição não encontrada";
-
-      results.push({ title, href, date, description });
-    });
-
-    // Envia os resultados de volta para o popup
-    chrome.runtime.sendMessage({ action: "searchResults", results });
-  }
-
-  // Listener para receber resultados da busca
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === "searchResults") {
-      const resultsContainer = document.getElementById("results");
-      resultsContainer.innerHTML = "";
-
-      if (message.results.length === 0) {
-        resultsContainer.innerHTML = "<p>Nenhum resultado encontrado.</p>";
-        return;
-      }
-
-      message.results.forEach((result) => {
-        const resultDiv = document.createElement("div");
-        resultDiv.classList.add("result");
-
-        const title = document.createElement("h3");
-        const titleLink = document.createElement("a");
-        titleLink.href = result.href;
-        titleLink.textContent = result.title;
-        titleLink.target = "_blank";
-        title.appendChild(titleLink);
-
-        const date = document.createElement("p");
-        date.textContent = result.date;
-
-        const description = document.createElement("p");
-        description.textContent = result.description;
-
-        resultDiv.appendChild(title);
-        resultDiv.appendChild(date);
-        resultDiv.appendChild(description);
-
-        resultsContainer.appendChild(resultDiv);
-      });
-    }
   });
 
-  // Evento de submissão do formulário de busca
-  const searchForm = document.getElementById("searchForm");
-  searchForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const searchTerm = document.getElementById("searchTerm").value.trim();
-    if (searchTerm) {
-      performSearch(searchTerm);
-    } else {
-      alert("Por favor, insira um termo de busca.");
-    }
-  });
-
-  // Carregar instâncias ao iniciar
-  loadInstances((instances) => {
-    allInstances = instances;
-    renderInstances();
-  });
+  loadInstances();
 });
