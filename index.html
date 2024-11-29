@@ -14,66 +14,84 @@
       </ul>
     </nav>
 
-    <div id="aboutPage">
-      <h1>Sobre</h1>
-      <p>Bem-vindo ao SN Explorer!</p>
-    </div>
-
-    <div id="documentationPage" style="display: none">
+    <div id="documentationPage">
       <h1>KnowNow</h1>
-      <form id="searchForm">
-        <input
-          type="text"
-          id="searchTerm"
-          placeholder="Digite o termo de busca"
-          required
-        />
-        <button type="submit" id="searchButton">Buscar</button>
-      </form>
-      <div id="loading" class="loading" style="display: none">
-        <div class="spinner"></div>
-        <p>Buscando resultados...</p>
+      <div id="searchPage">
+        <p>
+          Digite um termo de busca para encontrar artigos e informações
+          relevantes no ServiceNow Guru. Utilize palavras-chave específicas para
+          obter resultados mais precisos.
+        </p>
+        <form id="searchForm">
+          <input
+            type="text"
+            id="searchTerm"
+            placeholder="Digite o termo de busca"
+            required
+          />
+          <button type="submit" id="searchButton">Buscar</button>
+        </form>
+        <div id="loading">
+          <div class="spinner"></div>
+          <p>Buscando resultados...</p>
+        </div>
+        <div id="results"></div>
       </div>
-      <div id="results"></div>
     </div>
 
-    <div id="instancesPage" style="display: none">
-      <h1>Suas Instâncias</h1>
+    <div id="addItemModal" class="modal">
+      <div class="modal-header">Adicionar/Editar Item</div>
+      <input
+        type="text"
+        id="itemNameInput"
+        placeholder="Nome do Item..."
+        required
+      />
+      <input
+        type="text"
+        id="itemLinkInput"
+        placeholder="URL do Item..."
+        required
+      />
+      <div class="modal-buttons">
+        <button id="confirmAddItemButton">Salvar</button>
+        <button id="cancelAddItemButton">Cancelar</button>
+      </div>
+    </div>
+    <div id="overlay" class="overlay"></div>
+
+    <div id="editCategoryModal" class="modal">
+      <div class="modal-header">Editar Categoria</div>
+      <input
+        type="text"
+        id="categoryNameInput"
+        placeholder="Nome da Categoria..."
+        required
+      />
+      <div class="modal-buttons">
+        <button id="confirmEditCategoryButton">Salvar</button>
+        <button id="cancelEditCategoryButton">Cancelar</button>
+      </div>
+    </div>
+
+    <div id="instancesPage">
+      <h1>Suas instâncias</h1>
+      <div style="display: flex; align-items: center; margin-top: 20px">
+        <input type="text" id="addInstanceInput" placeholder="Instância..." />
+        <button id="addInstanceButton">+</button>
+      </div>
       <div id="instancesContainer"></div>
     </div>
 
-    <div id="addItemModal" class="modal" style="display: none">
-      <div class="modal-content">
-        <h2>Adicionar Item</h2>
-        <input
-          type="text"
-          id="itemNameInput"
-          placeholder="Nome do Item"
-          required
-        />
-        <input
-          type="text"
-          id="itemLinkInput"
-          placeholder="URL do Item"
-          required
-        />
-        <button id="saveItemButton">Salvar</button>
-        <button id="cancelItemButton">Cancelar</button>
-      </div>
-    </div>
-
-    <div id="editCategoryModal" class="modal" style="display: none">
-      <div class="modal-content">
-        <h2>Editar Categoria</h2>
-        <input
-          type="text"
-          id="categoryNameInput"
-          placeholder="Nome da Categoria"
-          required
-        />
-        <button id="saveCategoryButton">Salvar</button>
-        <button id="cancelCategoryButton">Cancelar</button>
-      </div>
+    <div id="aboutPage">
+      <h1>Sobre</h1>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eget
+        sapien arcu. Orci varius natoque penatibus et magnis dis parturient
+        montes, nascetur ridiculus mus. Quisque magna purus, sollicitudin id
+        semper non, interdum at sem. Etiam faucibus, leo sed posuere cursus,
+        arcu ex placerat nunc, non ullamcorper neque nisl quis ipsum.
+      </p>
     </div>
 
     <script src="popup.js"></script>
