@@ -1,14 +1,17 @@
 {
   "manifest_version": 3,
   "name": "SN Explorer",
-  "version": "0.6",
-  "description": "Extensão SN Explorer com funcionalidade de busca.",
+  "version": "1.0",
+  "description": "Busca e exibe resultados da documentação do ServiceNow Guru e gerencia instâncias.",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": ["https://servicenowguru.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "index.html"
   },
-  "background": {
-    "service_worker": "background.js"
+  "icons": {
+    "128": "icon.png"
   }
 }
