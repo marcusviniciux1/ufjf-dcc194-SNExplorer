@@ -3,7 +3,7 @@
   "name": "SN Explorer",
   "version": "1.0",
   "description": "Busca e exibe resultados da documentação do ServiceNow Guru e gerencia instâncias.",
-  "permissions": ["storage", "activeTab", "scripting"],
+  "permissions": ["storage", "activeTab", "scripting", "contextMenus"],
   "host_permissions": ["https://servicenowguru.com/*"],
   "background": {
     "service_worker": "background.js"
