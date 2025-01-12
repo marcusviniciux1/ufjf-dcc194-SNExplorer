@@ -292,9 +292,16 @@ document.addEventListener("DOMContentLoaded", () => {
         "article.fusion-post-medium-alternate"
       );
 
-      articles.forEach((article, index) => {
-        if (index >= 5) return;
+      const resultsHeader = document.createElement("h2");
+      resultsHeader.classList.add("results-header");
+      if (articles.length > 0) {
+        resultsHeader.textContent = `${articles.length} resultado(s) encontrado(s)`;
+      } else {
+        resultsHeader.textContent = "Nenhum resultado encontrado";
+      }
+      resultsContainer.appendChild(resultsHeader);
 
+      articles.forEach((article, index) => {
         const titleElement = article.querySelector("h2.entry-title a");
         const dateElement = article.querySelector(
           ".fusion-single-line-meta span:nth-of-type(3)"
@@ -309,8 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const href = titleElement?.href || "#";
         const date = dateElement?.textContent.trim() || "Data não encontrada";
         const description =
-          descriptionElement?.textContent.trim() ||
-            "Descrição não encontrada";
+          descriptionElement?.textContent.trim() || "Descrição não encontrada";
 
         const resultDiv = document.createElement("div");
         resultDiv.classList.add("result");

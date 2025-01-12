@@ -359,6 +359,11 @@ input[type="text"] {
   color: white;
 }
 
+.results-header {
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+
 /* ------------------------- Página Instâncias ------------------------- */
 #instancesPage {
   padding: 5px;
@@ -443,4 +448,24 @@ input[type="text"] {
 #cancelAddItemButton:hover,
 #cancelEditCategoryButton:hover {
   background-color: #eeeeee;
+}
+
+/* ------------------------- Barra de rolagem ------------------------- */
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #ddd;
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #81b5a1;
+  border-radius: 10px;
+  border: 3px solid #ddd;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #6fa88e;
 }
