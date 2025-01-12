@@ -8,9 +8,10 @@
   <body>
     <nav>
       <ul>
-        <li><a href="#" id="aboutPageLink">Sobre</a></li>
+        <li><a href="#" id="aboutPageLink" class="active">Sobre</a></li>
         <li><a href="#" id="documentationPageLink">KnowNow</a></li>
         <li><a href="#" id="instancesPageLink">Instâncias</a></li>
+        <li><a href="#" id="utilitiesPageLink">Utilitários</a></li>
       </ul>
     </nav>
 
@@ -39,6 +40,87 @@
       </div>
     </div>
 
+    <div id="utilitiesPage">
+      <h1>Utilitários</h1>
+      <ul>
+        <li>
+          <a
+            href="https://developer.servicenow.com/dev.do#!/home"
+            target="_blank"
+          >
+            PDI (Personal Developer Instance)
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://developer.servicenow.com/connect.do#!/share"
+            target="_blank"
+          >
+            Update Sets e Scripts Compartilhados
+          </a>
+        </li>
+        <li>
+          <a href="https://www.servicenow.com/docs/pt-BR/" target="_blank">
+            ServiceNow Docs
+          </a>
+        </li>
+
+        <li>
+          <a href="https://www.servicenow.com/community/" target="_blank">
+            ServiceNow Community
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.examtopics.com/exams/servicenow/"
+            target="_blank"
+          >
+            Questões para Certificações
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://nowlearning.servicenow.com/lxp/en/pages/career-journey?id=journey"
+            target="_blank"
+          >
+            Carreiras ServiceNow
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="instancesPage">
+      <h1>Suas instâncias</h1>
+      <div style="display: flex; align-items: center; margin-top: 20px">
+        <input type="text" id="addInstanceInput" placeholder="Instância..." />
+        <button id="addInstanceButton">+</button>
+      </div>
+      <div id="instancesContainer"></div>
+    </div>
+
+    <div id="aboutPage">
+      <h1>Sobre</h1>
+      <div class="about-text">
+        Bem-vindo ao SN Explorer!<br /><br />
+        O SN Explorer é uma extensão desenvolvida para facilitar o trabalho de
+        profissionais que utilizam a plataforma ServiceNow. O objetivo é
+        centralizar informações essenciais e ferramentas úteis diretamente no
+        navegador.<br /><br />
+        <span>Com o SN Explorer, você pode:</span>
+        <ul>
+          <li>Pesquisar rapidamente nos artigos do site ServiceNow Guru.</li>
+          <li>
+            Gerenciar suas instâncias de forma prática, adicionando, editando e
+            excluindo informações conforme necessário.
+          </li>
+          <li>
+            Acessar links úteis e recursos essenciais para otimizar o seu dia a
+            dia.
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <div id="addItemModal" class="modal">
       <div class="modal-header">Adicionar/Editar Item</div>
       <input
@@ -54,44 +136,24 @@
         required
       />
       <div class="modal-buttons">
-        <button id="confirmAddItemButton">Salvar</button>
         <button id="cancelAddItemButton">Cancelar</button>
+        <button id="confirmAddItemButton">Salvar</button>
       </div>
     </div>
     <div id="overlay" class="overlay"></div>
 
     <div id="editCategoryModal" class="modal">
-      <div class="modal-header">Editar Categoria</div>
+      <div class="modal-header">Editar Instância</div>
       <input
         type="text"
         id="categoryNameInput"
-        placeholder="Nome da Categoria..."
+        placeholder="Nome da Instância..."
         required
       />
       <div class="modal-buttons">
-        <button id="confirmEditCategoryButton">Salvar</button>
         <button id="cancelEditCategoryButton">Cancelar</button>
+        <button id="confirmEditCategoryButton">Salvar</button>
       </div>
-    </div>
-
-    <div id="instancesPage">
-      <h1>Suas instâncias</h1>
-      <div style="display: flex; align-items: center; margin-top: 20px">
-        <input type="text" id="addInstanceInput" placeholder="Instância..." />
-        <button id="addInstanceButton">+</button>
-      </div>
-      <div id="instancesContainer"></div>
-    </div>
-
-    <div id="aboutPage">
-      <h1>Sobre</h1>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eget
-        sapien arcu. Orci varius natoque penatibus et magnis dis parturient
-        montes, nascetur ridiculus mus. Quisque magna purus, sollicitudin id
-        semper non, interdum at sem. Etiam faucibus, leo sed posuere cursus,
-        arcu ex placerat nunc, non ullamcorper neque nisl quis ipsum.
-      </p>
     </div>
 
     <script src="popup.js"></script>

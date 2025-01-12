@@ -4,10 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const pages = {
-    searchPage: getElement("searchPage"),
     instancesPage: getElement("instancesPage"),
     aboutPage: getElement("aboutPage"),
     documentationPage: getElement("documentationPage"),
+    utilitiesPage: getElement("utilitiesPage"),
   };
 
   const resultsContainer = getElement("results");
@@ -38,15 +38,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   showPage(pages.aboutPage);
 
-  getElement("aboutPageLink").addEventListener("click", () =>
-    showPage(pages.aboutPage)
-  );
-  getElement("documentationPageLink").addEventListener("click", () =>
-    showPage(pages.documentationPage)
-  );
-  getElement("instancesPageLink").addEventListener("click", () =>
-    showPage(pages.instancesPage)
-  );
+  getElement("aboutPageLink").addEventListener("click", () => {
+    showPage(pages.aboutPage);
+    activateMenuItem("aboutPageLink");
+  });
+  getElement("documentationPageLink").addEventListener("click", () => {
+    showPage(pages.documentationPage);
+    activateMenuItem("documentationPageLink");
+  });
+  getElement("instancesPageLink").addEventListener("click", () => {
+    showPage(pages.instancesPage);
+    activateMenuItem("instancesPageLink");
+  });
+  getElement("utilitiesPageLink").addEventListener("click", () => {
+    showPage(pages.utilitiesPage);
+    activateMenuItem("utilitiesPageLink");
+  });
+
+  function activateMenuItem(menuId) {
+    document.querySelectorAll("nav ul li a").forEach((link) => {
+      link.classList.remove("active");
+    });
+
+    const activeLink = document.getElementById(menuId);
+    activeLink.classList.add("active");
+  }
 
   function saveInstances(instances) {
     chrome.storage.local.set({ instances }, () => {
@@ -75,8 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <h3>
               ${instance.name}
               <div style="display: flex; gap: 5px;">
-                  <button class="editCategoryButton">Editar</button>
-                  <button class="deleteButton">X</button>
+              <button class="deleteButton">X</button>
+              <button class="editCategoryButton">Editar</button>
               </div>
           </h3>
           <div class="itemsContainer"></div>
@@ -117,8 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
     itemDiv.innerHTML = `
           <a href="${item.link}" target="_blank">${item.name}</a>
           <div style="display: flex; gap: 5px;">
-              <button class="editItemButton">Editar</button>
-              <button class="deleteButton">X</button>
+          <button class="deleteButton">X</button>
+          <button class="editItemButton">Editar</button>
           </div>
       `;
 
