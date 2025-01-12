@@ -27,7 +27,8 @@
           <input
             type="text"
             id="searchTerm"
-            placeholder="Digite o termo de busca"
+            placeholder="Digite o termo de busca..."
+            autocomplete="off"
             required
           />
           <button type="submit" id="searchButton">Buscar</button>
@@ -92,7 +93,7 @@
     <div id="instancesPage">
       <h1>Suas instâncias</h1>
       <div style="display: flex; align-items: center; margin-top: 20px">
-        <input type="text" id="addInstanceInput" placeholder="Instância..." />
+        <input type="text" id="addInstanceInput" placeholder="Digite o nome da instância..." />
         <button id="addInstanceButton">+</button>
       </div>
       <div id="instancesContainer"></div>

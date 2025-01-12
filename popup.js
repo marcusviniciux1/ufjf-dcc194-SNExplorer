@@ -309,10 +309,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const href = titleElement?.href || "#";
         const date = dateElement?.textContent.trim() || "Data não encontrada";
         const description =
-          descriptionElement?.textContent.trim() || "Descrição não encontrada";
+          (descriptionElement?.textContent.trim() ||
+            "Descrição não encontrada") + "...";
 
         const resultDiv = document.createElement("div");
         resultDiv.classList.add("result");
+        resultDiv.classList.add("container-kn");
         resultDiv.innerHTML = `
                   <h3><a href="${href}" target="_blank">${title}</a></h3>
                   <p>${date}</p>

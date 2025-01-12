@@ -25,7 +25,7 @@ nav ul li a {
   text-decoration: none;
   font-weight: bold;
   font-size: 12px;
-  padding: 10px;
+  padding: 10px 12px;
 }
 
 nav ul li a:hover,
@@ -276,6 +276,14 @@ input[type="text"] {
   font-size: 12px;
 }
 
+#searchTerm {
+  outline: none;
+}
+
+#searchTerm:focus {
+  border: 1px solid #81b5a1;
+}
+
 #documentationPage #searchButton {
   background-color: #81b5a1;
   padding: 8px;
@@ -294,6 +302,17 @@ input[type="text"] {
 #documentationPage #results .result p {
   color: #666;
   font-size: 12px;
+}
+
+.container-kn {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.container-kn:last-child {
+  margin-bottom: 0;
 }
 
 /* ------------------------- Página Instâncias ------------------------- */
