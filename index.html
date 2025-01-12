@@ -16,13 +16,14 @@
     </nav>
 
     <div id="documentationPage">
-      <h1>KnowNow</h1>
+      <h1>
+        KnowNow<span
+          class="info-icon"
+          title="Digite um termo de busca para encontrar artigos e informações relevantes no ServiceNow Guru. Utilize palavras-chave específicas para obter resultados mais precisos."
+          >?</span
+        >
+      </h1>
       <div id="searchPage">
-        <p>
-          Digite um termo de busca para encontrar artigos e informações
-          relevantes no ServiceNow Guru. Utilize palavras-chave específicas para
-          obter resultados mais precisos.
-        </p>
         <form id="searchForm">
           <input
             type="text"
@@ -91,9 +92,19 @@
     </div>
 
     <div id="instancesPage">
-      <h1>Suas instâncias</h1>
+      <h1>
+        Suas instâncias<span
+          class="info-icon"
+          title="Gerencie as instâncias das suas empresas, como dev, QA e prod."
+          >?</span
+        >
+      </h1>
       <div style="display: flex; align-items: center; margin-top: 20px">
-        <input type="text" id="addInstanceInput" placeholder="Digite o nome da instância..." />
+        <input
+          type="text"
+          id="addInstanceInput"
+          placeholder="Digite o nome da instância..."
+        />
         <button id="addInstanceButton">+</button>
       </div>
       <div id="instancesContainer"></div>
