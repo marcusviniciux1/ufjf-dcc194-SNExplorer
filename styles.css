@@ -11,6 +11,10 @@ nav {
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 50px;
 }
 
 nav ul {
@@ -21,6 +25,11 @@ nav ul {
 }
 
 nav ul li a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 20px;
+  height: 20px;
   color: white;
   text-decoration: none;
   font-weight: bold;
@@ -128,6 +137,8 @@ input[type="text"] {
   border: 1px solid #ddd;
   border-radius: 20px;
   padding: 8px 15px;
+  margin: 5px 0px;
+  margin-right: 10px;
   font-size: 14px;
   flex-grow: 1;
 }
@@ -286,7 +297,6 @@ input[type="text"] {
 #documentationPage #searchButton {
   background-color: #81b5a1;
   padding: 8px;
-  margin-left: 10px;
 }
 
 #documentationPage #searchButton:hover {
@@ -468,4 +478,97 @@ body::-webkit-scrollbar-thumb {
 
 body::-webkit-scrollbar-thumb:hover {
   background-color: #6fa88e;
+}
+
+/* ------------------------- Dropdown ------------------------- */
+.settings-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.settings-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 5px 0;
+  z-index: 10;
+  min-width: 150px;
+}
+
+.settings-menu li {
+  margin: 0;
+}
+
+.settings-menu li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  display: block;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.settings-menu li a:hover {
+  background-color: #81b5a1;
+  color: white;
+}
+
+.settings-dropdown:hover .settings-menu {
+  display: block;
+}
+
+.theme-dropdown {
+  position: relative;
+}
+
+.theme-menu {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 100%;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 5px 0;
+  z-index: 11;
+  min-width: 150px;
+}
+
+.theme-menu li {
+  margin: 0;
+}
+
+.theme-menu li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  display: block;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.theme-menu li a:hover {
+  background-color: #81b5a1;
+  color: white;
+}
+
+.theme-dropdown:hover .theme-menu {
+  display: block;
+}
+
+.gear-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
