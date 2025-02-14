@@ -34,6 +34,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmAddItemButton = getElement("confirmAddItemButton");
   const cancelAddItemButton = getElement("cancelAddItemButton");
 
+  //Mudar temas
+  const body = document.body;
+  const darkThemeLink = document.getElementById("darkThemeLink");
+  const lightThemeLink = document.getElementById("lightThemeLink");
+
+  // Carregar tema salvo
+  chrome.storage.local.get("theme", (data) => {
+    if (data.theme === "dark") {
+      body.classList.add("dark-theme");
+      body.classList.remove("light-theme");
+    } else {
+      body.classList.add("light-theme");
+      body.classList.remove("dark-theme");
+    }
+  });
+
+  // Aplicar tema escuro
+  darkThemeLink.addEventListener("click", () => {
+    body.classList.remove("light-theme");
+    body.classList.add("dark-theme");
+    chrome.storage.local.set({ theme: "dark" });
+  });
+
+  // Aplicar tema claro
+  lightThemeLink.addEventListener("click", () => {
+    body.classList.remove("dark-theme");
+    body.classList.add("light-theme");
+    chrome.storage.local.set({ theme: "light" });
+  });
+
   // Exibir uma página específica
   function showPage(page) {
     Object.values(pages).forEach((p) => p.classList.remove("active"));

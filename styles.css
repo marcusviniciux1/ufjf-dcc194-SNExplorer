@@ -40,7 +40,6 @@ nav ul li a {
 nav ul li a:hover,
 nav ul li a.active {
   background-color: #5c8d76;
-  padding: 10px 12px;
   border-radius: 5px;
 }
 
@@ -79,21 +78,7 @@ button.deleteButton:hover {
 }
 
 #addInstanceButton,
-.addItemButton {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 20px !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #81b5a1;
-  color: white;
-}
-
-#addInstanceButton:hover,
-.addItemButton:hover {
-  background-color: #6fa88e;
-}
-
+.addItemButton,
 #documentationPage #searchButton {
   width: 40px;
   height: 40px;
@@ -102,11 +87,21 @@ button.deleteButton:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #81b5a1;
   color: white;
+}
+
+#documentationPage #searchButton {
   padding: 8px;
 }
 
+#addInstanceButton:hover,
+.addItemButton:hover,
 #documentationPage #searchButton:hover {
   background-color: #6fa88e;
+}
+
+/* ------------------------- Links ------------------------- */
+a {
+  text-decoration: none;
 }
 
 /* ------------------------- Páginas Ativas ------------------------- */
@@ -149,13 +144,16 @@ button.deleteButton:hover {
 
 /* ------------------------- Campos de Texto ------------------------- */
 input[type="text"] {
-  border: 1px solid #ddd;
+  border: 1px solid #dadce0;
   border-radius: 20px;
   padding: 8px 15px;
-  margin: 5px 0px;
-  margin-right: 10px;
+  margin: 5px 10px 5px 0;
   font-size: 14px;
   flex-grow: 1;
+}
+
+input[type="text"]:focus {
+  outline: none;
 }
 
 /* ------------------------- Contêiner de Instâncias ------------------------- */
@@ -189,10 +187,6 @@ input[type="text"] {
   color: #81b5a1;
   text-decoration: none;
   font-size: 16px;
-}
-
-.item a:hover {
-  text-decoration: underline;
 }
 
 /* ------------------------- Modal ------------------------- */
@@ -324,7 +318,7 @@ input[type="text"] {
 
 #documentationPage #results .result p.date {
   font-size: 12px;
-  color: #999;
+  color: #777777;
 }
 
 .container-kn {
@@ -349,7 +343,6 @@ input[type="text"] {
 
 .read-more:hover {
   background-color: rgba(129, 181, 161, 0.2);
-  padding: 2px 4px;
   border-radius: 4px;
 }
 
@@ -438,16 +431,6 @@ input[type="text"] {
   margin-bottom: 10px;
 }
 
-#utilitiesPage ul li a {
-  color: #81b5a1;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-#utilitiesPage ul li a:hover {
-  text-decoration: underline;
-}
-
 .itemsContainer {
   margin-bottom: 15px;
 }
@@ -482,14 +465,14 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  background: #ddd;
+  background: #f4f4f4;
   border-radius: 10px;
 }
 
 body::-webkit-scrollbar-thumb {
   background-color: #81b5a1;
   border-radius: 10px;
-  border: 3px solid #ddd;
+  border: 3px solid #f4f4f4;
 }
 
 body::-webkit-scrollbar-thumb:hover {
@@ -502,45 +485,23 @@ body::-webkit-scrollbar-thumb:hover {
   display: inline-block;
 }
 
-.settings-menu {
+.settings-menu,
+.theme-menu {
   display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   list-style: none;
   padding: 5px 0;
-  z-index: 10;
   min-width: 150px;
 }
 
-.settings-menu li {
-  margin: 0;
-}
-
-.settings-menu li a {
-  text-decoration: none;
-  color: #333;
-  font-size: 12px;
-  display: block;
-  padding: 5px 15px;
-  border-radius: 5px;
-}
-
-.settings-menu li a:hover {
-  background-color: #81b5a1;
-  color: white;
-  border-radius: 5px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  padding: 5px 15px;
-  margin: 0px 3px;
-}
-
-.settings-dropdown:hover .settings-menu {
-  display: block;
+.settings-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
 }
 
 .theme-dropdown {
@@ -548,24 +509,18 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 .theme-menu {
-  display: none;
   position: absolute;
   top: 0;
   right: 100%;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  padding: 5px 0;
   z-index: 11;
-  min-width: 150px;
 }
 
+.settings-menu li,
 .theme-menu li {
   margin: 0;
 }
 
+.settings-menu li a,
 .theme-menu li a {
   text-decoration: none;
   color: #333;
@@ -575,15 +530,15 @@ body::-webkit-scrollbar-thumb:hover {
   border-radius: 5px;
 }
 
+.settings-menu li a:hover,
 .theme-menu li a:hover {
   background-color: #81b5a1;
   color: white;
-  border-radius: 5px;
   transition: background-color 0.2s ease, color 0.2s ease;
-  padding: 5px 15px;
-  margin: 0px 3px;
+  margin: 0 3px;
 }
 
+.settings-dropdown:hover .settings-menu,
 .theme-dropdown:hover .theme-menu {
   display: block;
 }
@@ -593,4 +548,312 @@ body::-webkit-scrollbar-thumb:hover {
   height: 20px;
   cursor: pointer;
   transition: transform 0.2s ease;
+}
+
+/* ------------------------- MODO CLARO ------------------------- */
+.light-theme {
+  background-color: #f8fafc;
+  color: #202124;
+}
+
+.light-theme h1,
+.light-theme h2,
+.light-theme h3 {
+  color: #1d1d1d;
+}
+
+.light-theme p,
+.light-theme li,
+span {
+  color: #1d1d1d;
+}
+
+.light-theme #utilitiesPage ul li a {
+  color: #81b5a1;
+  font-size: 14px;
+}
+
+.light-theme #utilitiesPage ul li a:hover {
+  color: #6fa88e;
+}
+
+.light-theme .instance,
+.light-theme .container-kn,
+.light-theme .modal {
+  border: 1px solid #dadce0;
+  background-color: #f6f6f6;
+}
+
+.light-theme nav {
+  background-color: #81b5a1;
+}
+
+.light-theme nav ul li a {
+  color: white;
+}
+
+.light-theme nav ul li a.active,
+.light-theme nav ul li a:hover {
+  background-color: #5c8d76;
+}
+
+.light-theme .spinner {
+  border-top-color: #81b5a1;
+}
+
+/* ------------------------- BOTÕES - MODO CLARO ------------------------- */
+.light-theme button {
+  background-color: #81b5a1;
+  color: white;
+}
+
+.light-theme button:hover {
+  background-color: #5c8d76;
+}
+
+.light-theme #documentationPage #searchButton {
+  background-color: #81b5a1;
+}
+
+.light-theme #documentationPage #searchButton:hover {
+  background-color: #5c8d76;
+}
+
+.light-theme #addInstanceButton,
+.light-theme .addItemButton {
+  background-color: #81b5a1;
+}
+
+.light-theme #addInstanceButton:hover,
+.light-theme .addItemButton:hover {
+  background-color: #5c8d76;
+}
+
+.light-theme #cancelAddItemButton:hover,
+.light-theme #cancelEditCategoryButton:hover {
+  background-color: #eaeaea;
+}
+
+.light-theme button.deleteButton {
+  color: #81b5a1;
+  background-color: transparent;
+}
+
+.light-theme button.deleteButton:hover {
+  background-color: #eaeaea;
+}
+
+.light-theme button.editCategoryButton,
+.light-theme button.editItemButton {
+  background-color: #81b5a1;
+}
+
+.light-theme button.editCategoryButton:hover,
+.light-theme button.editItemButton:hover {
+  background-color: #5c8d76;
+}
+
+/* ------------------------- CAMPOS DE ENTRADA - MODO CLARO ------------------------- */
+.light-theme input[type="text"] {
+  background-color: #f8fafc;
+  color: #202124;
+  border: 1px solid #dadce0;
+}
+
+.light-theme #addInstanceInput:focus,
+.light-theme #searchTerm:focus,
+.light-theme #categoryNameInput:focus,
+.light-theme #itemNameInput:focus,
+.light-theme #itemLinkInput:focus {
+  border: 1px solid #81b5a1;
+}
+
+/* ------------------------- DROPDOWN - MODO CLARO ------------------------- */
+.light-theme .settings-menu,
+.light-theme .theme-menu {
+  background-color: white;
+  border: 1px solid #dadce0;
+}
+
+.light-theme .settings-menu li a,
+.light-theme .theme-menu li a {
+  color: #202124;
+}
+
+.light-theme .settings-menu li a:hover,
+.light-theme .theme-menu li a:hover {
+  background-color: #81b5a1;
+  color: white;
+}
+
+/* ------------------------- MODO ESCURO ------------------------- */
+.dark-theme {
+  background-color: #242525;
+  color: #e8eaed;
+}
+
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme p,
+.dark-theme li,
+.dark-theme span {
+  color: #e8eaed !important;
+}
+
+.dark-theme #utilitiesPage ul li a {
+  color: #79d7eb;
+  font-size: 14px;
+}
+
+.dark-theme #utilitiesPage ul li a:hover {
+  color: #90d6ea;
+}
+
+.dark-theme a {
+  color: #79d7eb;
+}
+
+.dark-theme a:hover {
+  color: #90d6ea;
+}
+
+.dark-theme .info-icon {
+  color: #2e494e;
+  border: 1px solid #2e494e;
+}
+
+.dark-theme .info-icon:hover {
+  background-color: #2e494e;
+  color: white;
+}
+
+.dark-theme .instance,
+.dark-theme .container-kn,
+.dark-theme .modal {
+  border: 1px solid #3c4043;
+  background-color: #272827;
+}
+
+.dark-theme nav {
+  background-color: #272827;
+  border: 1px solid #3c4043;
+}
+
+.dark-theme nav ul li a {
+  color: #e8eaed;
+}
+
+.dark-theme nav ul li a.active,
+.dark-theme nav ul li a:hover {
+  background-color: #165f72;
+  color: white;
+}
+
+.dark-theme .spinner {
+  border-top-color: #165f72;
+}
+
+/* ------------------------- BOTÕES - MODO ESCURO ------------------------- */
+.dark-theme button {
+  background-color: #165f72;
+  color: white;
+}
+
+.dark-theme button:hover {
+  background-color: #154656;
+}
+
+.dark-theme #documentationPage #searchButton {
+  background-color: #165f72;
+}
+
+.dark-theme #documentationPage #searchButton:hover {
+  background-color: #154656;
+}
+
+.dark-theme #addInstanceButton,
+.dark-theme .addItemButton {
+  background-color: #165f72;
+}
+
+.dark-theme #addInstanceButton:hover,
+.dark-theme .addItemButton:hover {
+  background-color: #154656;
+}
+
+.dark-theme #cancelAddItemButton,
+.dark-theme #cancelEditCategoryButton {
+  background-color: transparent;
+  border: 1px solid #165f72;
+  color: white;
+}
+
+.dark-theme #cancelAddItemButton:hover,
+.dark-theme #cancelEditCategoryButton:hover {
+  background-color: #38393c;
+}
+
+.dark-theme button.deleteButton {
+  background-color: transparent;
+  border: 1px solid #165f72;
+}
+
+.dark-theme button.deleteButton:hover {
+  background-color: #38393c;
+}
+
+.dark-theme button.editCategoryButton,
+.dark-theme button.editItemButton {
+  background-color: #165f72;
+}
+
+.dark-theme button.editCategoryButton:hover,
+.dark-theme button.editItemButton:hover {
+  background-color: #154656;
+}
+
+.dark-theme .read-more {
+  color: #79d7eb;
+}
+
+.dark-theme .read-more:hover {
+  background-color: rgba(67, 96, 119, 0.2);
+}
+
+/* ------------------------- CAMPOS DE ENTRADA - MODO ESCURO ------------------------- */
+.dark-theme input[type="text"] {
+  background-color: #242525;
+  color: #e8eaed;
+  border: 1px solid #3c4043;
+}
+
+.dark-theme input[type="text"]::placeholder {
+  color: #9aa0a6;
+}
+
+.dark-theme #addInstanceInput:focus,
+.dark-theme #searchTerm:focus,
+.dark-theme #categoryNameInput:focus,
+.dark-theme #itemNameInput:focus,
+.dark-theme #itemLinkInput:focus {
+  border: 1px solid #90d6ea;
+}
+
+/* ------------------------- DROPDOWN - MODO ESCURO ------------------------- */
+.dark-theme .settings-menu,
+.dark-theme .theme-menu {
+  background-color: #242525;
+  border: 1px solid #3c4043;
+}
+
+.dark-theme .settings-menu li a,
+.dark-theme .theme-menu li a {
+  color: #e8eaed;
+}
+
+.dark-theme .settings-menu li a:hover,
+.dark-theme .theme-menu li a:hover {
+  background-color: #165f72;
+  color: white;
 }
