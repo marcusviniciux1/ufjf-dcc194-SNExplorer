@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-  function getElement(id) {
-    return document.getElementById(id);
-  }
+  // Função auxiliar para obter elementos pelo ID
+  const getElement = (id) => document.getElementById(id);
 
+  // Elementos das páginas
   const pages = {
     instancesPage: getElement("instancesPage"),
     aboutPage: getElement("aboutPage"),
@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     utilitiesPage: getElement("utilitiesPage"),
   };
 
+  // Outros elementos do popup
   const resultsContainer = getElement("results");
   const loadingIndicator = getElement("loading");
   const searchForm = getElement("searchForm");
@@ -19,25 +20,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const addInstanceButton = getElement("addInstanceButton");
   const instancesContainer = getElement("instancesContainer");
 
-  const addItemModal = getElement("addItemModal");
+  // Elementos dos modais para empresas e instâncias
   const overlay = getElement("overlay");
-  const itemNameInput = getElement("itemNameInput");
-  const itemLinkInput = getElement("itemLinkInput");
-  const confirmAddItemButton = getElement("confirmAddItemButton");
-  const cancelAddItemButton = getElement("cancelAddItemButton");
 
   const editCategoryModal = getElement("editCategoryModal");
   const categoryNameInput = getElement("categoryNameInput");
   const confirmEditCategoryButton = getElement("confirmEditCategoryButton");
   const cancelEditCategoryButton = getElement("cancelEditCategoryButton");
 
+  const addItemModal = getElement("addItemModal");
+  const itemNameInput = getElement("itemNameInput");
+  const itemLinkInput = getElement("itemLinkInput");
+  const confirmAddItemButton = getElement("confirmAddItemButton");
+  const cancelAddItemButton = getElement("cancelAddItemButton");
+
+  // Exibir uma página específica
   function showPage(page) {
     Object.values(pages).forEach((p) => p.classList.remove("active"));
     page.classList.add("active");
   }
 
+  // Inicializa com a página "Sobre"
   showPage(pages.aboutPage);
 
+  // Navegação entre as páginas
   getElement("aboutPageLink").addEventListener("click", () => {
     showPage(pages.aboutPage);
     activateMenuItem("aboutPageLink");
@@ -55,54 +61,64 @@ document.addEventListener("DOMContentLoaded", () => {
     activateMenuItem("utilitiesPageLink");
   });
 
+  // Ativar o item de menu selecionado
   function activateMenuItem(menuId) {
     document.querySelectorAll("nav ul li a").forEach((link) => {
       link.classList.remove("active");
     });
-
-    const activeLink = document.getElementById(menuId);
-    activeLink.classList.add("active");
+    getElement(menuId).classList.add("active");
   }
 
+  // Funções de armazenamento
   function saveInstances(instances) {
-    chrome.storage.local.set({ instances }, () => {
-      if (chrome.runtime.lastError) {
-        console.error("Erro ao salvar instâncias:", chrome.runtime.lastError);
-      }
-    });
+    chrome.storage.local.set({ instances });
   }
 
   function loadInstances() {
     chrome.storage.local.get(["instances"], (result) => {
-      if (chrome.runtime.lastError) {
-        console.error("Erro ao carregar instâncias:", chrome.runtime.lastError);
-        return;
-      }
       const instances = result.instances || [];
       instancesContainer.innerHTML = "";
       instances.forEach(renderInstance);
     });
   }
 
+  // Funções auxiliares para modais
+  function showModal(modal) {
+    modal.classList.add("active");
+    overlay.classList.add("active");
+  }
+
+  function closeModal(modal) {
+    modal.classList.remove("active");
+    overlay.classList.remove("active");
+    resetInputs(itemNameInput, itemLinkInput, categoryNameInput);
+  }
+
+  function resetInputs(...inputs) {
+    inputs.forEach((input) => (input.value = ""));
+  }
+
+  // Renderizar uma empresa e suas instancias
   function renderInstance(instance) {
     const instanceDiv = document.createElement("div");
     instanceDiv.classList.add("instance");
     instanceDiv.innerHTML = `
-          <h3>
-              ${instance.name}
-              <div style="display: flex; gap: 5px;">
-              <button class="deleteButton">X</button>
-              <button class="editCategoryButton">Editar</button>
-              </div>
-          </h3>
-          <div class="itemsContainer"></div>
-      `;
+      <h3>
+        ${instance.name}
+        <div style="display: flex; gap: 5px;">
+          <button class="deleteButton">X</button>
+          <button class="editCategoryButton">☰</button>
+        </div>
+      </h3>
+      <div class="itemsContainer"></div>
+    `;
 
     const itemsContainer = instanceDiv.querySelector(".itemsContainer");
     instance.items.forEach((item) =>
       renderItem(item, instance, itemsContainer)
     );
 
+    // Botão para adicionar uma nova instância para a empresa
     const addItemButton = document.createElement("button");
     addItemButton.textContent = "+";
     addItemButton.classList.add("addItemButton");
@@ -111,13 +127,15 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     instanceDiv.appendChild(addItemButton);
 
+    // Deletar a empresa
     instanceDiv.querySelector(".deleteButton").addEventListener("click", () => {
-      if (confirm(`Deseja deletar a categoria "${instance.name}"?`)) {
+      if (confirm(`Deseja deletar a empresa "${instance.name}"?`)) {
         instanceDiv.remove();
         saveInstances(getAllInstances());
       }
     });
 
+    // Editar o nome da empresa
     instanceDiv
       .querySelector(".editCategoryButton")
       .addEventListener("click", () =>
@@ -127,17 +145,19 @@ document.addEventListener("DOMContentLoaded", () => {
     instancesContainer.appendChild(instanceDiv);
   }
 
+  // Renderizar uma instância dentro de uma empresa
   function renderItem(item, instance, itemsContainer) {
     const itemDiv = document.createElement("div");
     itemDiv.classList.add("item");
     itemDiv.innerHTML = `
-          <a href="${item.link}" target="_blank">${item.name}</a>
-          <div style="display: flex; gap: 5px;">
-          <button class="deleteButton">X</button>
-          <button class="editItemButton">Editar</button>
-          </div>
-      `;
+      <a href="${item.link}" target="_blank">${item.name}</a>
+      <div style="display: flex; gap: 5px;">
+        <button class="deleteButton">X</button>
+        <button class="editItemButton">☰</button>
+      </div>
+    `;
 
+    // Deletar a instância
     itemDiv.querySelector(".deleteButton").addEventListener("click", () => {
       const itemIndex = instance.items.findIndex(
         (i) => i.name === item.name && i.link === item.link
@@ -149,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // Editar a instância
     itemDiv
       .querySelector(".editItemButton")
       .addEventListener("click", () =>
@@ -158,6 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     itemsContainer.appendChild(itemDiv);
   }
 
+  // Extrair todas as empresas e suas instâncias do DOM
   function getAllInstances() {
     return Array.from(instancesContainer.querySelectorAll(".instance")).map(
       (instanceDiv) => {
@@ -165,18 +187,17 @@ document.addEventListener("DOMContentLoaded", () => {
           .querySelector("h3")
           .childNodes[0].textContent.trim();
         const items = Array.from(instanceDiv.querySelectorAll(".item")).map(
-          (itemDiv) => {
-            return {
-              name: itemDiv.querySelector("a").textContent.trim(),
-              link: itemDiv.querySelector("a").href,
-            };
-          }
+          (itemDiv) => ({
+            name: itemDiv.querySelector("a").textContent.trim(),
+            link: itemDiv.querySelector("a").href,
+          })
         );
         return { name, items };
       }
     );
   }
 
+  // Adicionar uma nova empresa
   addInstanceButton.addEventListener("click", () => {
     const instanceName = addInstanceInput.value.trim();
     if (instanceName) {
@@ -185,14 +206,13 @@ document.addEventListener("DOMContentLoaded", () => {
       addInstanceInput.value = "";
       saveInstances(getAllInstances());
     } else {
-      alert("Por favor, insira um nome para a instância.");
+      alert("Por favor, insira um nome para a empresa.");
     }
   });
 
+  // Abrir o modal de adicionar instância
   function openAddItemModal(instance, itemsContainer) {
-    addItemModal.classList.add("active");
-    overlay.classList.add("active");
-
+    showModal(addItemModal);
     itemNameInput.value = "";
     itemLinkInput.value = "";
 
@@ -214,10 +234,9 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.onclick = () => closeModal(addItemModal);
   }
 
+  // Abrir o modal de editar o nome da empresa
   function openEditCategoryModal(instance, instanceDiv) {
-    editCategoryModal.classList.add("active");
-    overlay.classList.add("active");
-
+    showModal(editCategoryModal);
     categoryNameInput.value = instance.name;
 
     confirmEditCategoryButton.onclick = () => {
@@ -228,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
         saveInstances(getAllInstances());
         closeModal(editCategoryModal);
       } else {
-        alert("Por favor, insira um nome válido para a instância.");
+        alert("Por favor, insira um nome válido para a empresa.");
       }
     };
 
@@ -236,10 +255,9 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.onclick = () => closeModal(editCategoryModal);
   }
 
+  // Abrir o modal de editar uma instância
   function openEditItemModal(item, instance, itemDiv) {
-    addItemModal.classList.add("active");
-    overlay.classList.add("active");
-
+    showModal(addItemModal);
     itemNameInput.value = item.name;
     itemLinkInput.value = item.link;
 
@@ -262,16 +280,12 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.onclick = () => closeModal(addItemModal);
   }
 
-  function closeModal(modal) {
-    modal.classList.remove("active");
-    overlay.classList.remove("active");
-    resetInputs(itemNameInput, itemLinkInput, categoryNameInput);
+  // Escapar caracteres especiais em uma string
+  function escaparRegex(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
-  function resetInputs(...inputs) {
-    inputs.forEach((input) => (input.value = ""));
-  }
-
+  // Submissão do formulário de busca
   searchForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -292,16 +306,27 @@ document.addEventListener("DOMContentLoaded", () => {
         "article.fusion-post-medium-alternate"
       );
 
+      // Cria uma regex com word boundaries para o termo de busca
+      const regex = new RegExp(`\\b${escaparRegex(searchTerm)}\\b`, "i");
+
+      // Filtra os artigos que tenham a palavra inteira
+      const filteredArticles = Array.from(articles).filter((article) => {
+        const titleElement = article.querySelector("h2.entry-title a");
+        const title = titleElement ? titleElement.textContent.trim() : "";
+        return regex.test(title);
+      });
+
+      // Cria e exibe o cabeçalho dos resultados
       const resultsHeader = document.createElement("h2");
       resultsHeader.classList.add("results-header");
-      if (articles.length > 0) {
-        resultsHeader.textContent = `${articles.length} resultado(s) encontrado(s)`;
-      } else {
-        resultsHeader.textContent = "Nenhum resultado encontrado";
-      }
+      resultsHeader.textContent =
+        filteredArticles.length > 0
+          ? `${filteredArticles.length} resultado(s) encontrado(s)`
+          : "Nenhum resultado encontrado";
       resultsContainer.appendChild(resultsHeader);
 
-      articles.forEach((article, index) => {
+      // Renderiza cada artigo filtrado
+      filteredArticles.forEach((article) => {
         const titleElement = article.querySelector("h2.entry-title a");
         const dateElement = article.querySelector(
           ".fusion-single-line-meta span:nth-of-type(3)"
@@ -319,13 +344,12 @@ document.addEventListener("DOMContentLoaded", () => {
           descriptionElement?.textContent.trim() || "Descrição não encontrada";
 
         const resultDiv = document.createElement("div");
-        resultDiv.classList.add("result");
-        resultDiv.classList.add("container-kn");
+        resultDiv.classList.add("result", "container-kn");
         resultDiv.innerHTML = `
-                  <h3>${title}</h3>
-                  <p class="date">${date}</p>
-                  <p>${description} <a href="${href}" target="_blank" class="read-more">Leia mais →</a></p>
-              `;
+          <h3>${title}</h3>
+          <p class="date">${date}</p>
+          <p>${description} <a href="${href}" target="_blank" class="read-more">Leia mais →</a></p>
+        `;
         resultsContainer.appendChild(resultDiv);
       });
     } catch (error) {
@@ -335,5 +359,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Carrega as instâncias salvas assim que o DOM estiver pronto
   loadInstances();
 });

@@ -2,197 +2,217 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SN Explorer</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <nav>
-      <ul>
-        <li><a href="#" id="aboutPageLink" class="active">Sobre</a></li>
-        <li><a href="#" id="documentationPageLink">KnowNow</a></li>
-        <li><a href="#" id="instancesPageLink">Instâncias</a></li>
-        <li><a href="#" id="utilitiesPageLink">Utilitários</a></li>
-        <li class="settings-dropdown">
-          <a href="#" id="settingsIcon">
-            <img src="gear-light.svg" alt="C" class="gear-icon" />
-          </a>
-          <ul class="settings-menu">
-            <li class="theme-dropdown">
-              <a href="#" id="popupThemeLink">Tema</a>
-              <ul class="theme-menu">
-                <li><a href="#" id="darkThemeLink">Dark</a></li>
-                <li><a href="#" id="lightThemeLink">Light</a></li>
-              </ul>
-            </li>
-            <li>
-              <a
-                href="https://github.com/marcusviniciux1/ufjf-dcc194-SNExplorer"
-                target="_blank"
-                >GitHub</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://github.com/marcusviniciux1/ufjf-dcc194-SNExplorer/issues"
-                target="_blank"
-                >Bugs</a
-              >
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-
-    <div id="documentationPage">
-      <h1>
-        KnowNow<span
-          class="info-icon"
-          title="Digite um termo de busca para encontrar artigos e informações relevantes no ServiceNow Guru. Utilize palavras-chave específicas para obter resultados mais precisos."
-          >?</span
-        >
-      </h1>
-      <div id="searchPage">
-        <form id="searchForm">
-          <input
-            type="text"
-            id="searchTerm"
-            placeholder="Digite o termo de busca..."
-            autocomplete="off"
-            required
-          />
-          <button type="submit" id="searchButton">Buscar</button>
-        </form>
-        <div id="loading">
-          <div class="spinner"></div>
-          <p>Buscando resultados...</p>
-        </div>
-        <div id="results"></div>
-      </div>
-    </div>
-
-    <div id="utilitiesPage">
-      <h1>Utilitários</h1>
-      <ul>
-        <li>
-          <a
-            href="https://developer.servicenow.com/dev.do#!/home"
-            target="_blank"
-          >
-            PDI (Personal Developer Instance)
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://developer.servicenow.com/connect.do#!/share"
-            target="_blank"
-          >
-            Update Sets e Scripts Compartilhados
-          </a>
-        </li>
-        <li>
-          <a href="https://www.servicenow.com/docs/pt-BR/" target="_blank">
-            ServiceNow Docs
-          </a>
-        </li>
-
-        <li>
-          <a href="https://www.servicenow.com/community/" target="_blank">
-            ServiceNow Community
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://www.examtopics.com/exams/servicenow/"
-            target="_blank"
-          >
-            Questões para Certificações
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://nowlearning.servicenow.com/lxp/en/pages/career-journey?id=journey"
-            target="_blank"
-          >
-            Carreiras ServiceNow
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <div id="instancesPage">
-      <h1>
-        Suas instâncias<span
-          class="info-icon"
-          title="Gerencie as instâncias das suas empresas, como dev, QA e prod."
-          >?</span
-        >
-      </h1>
-      <div style="display: flex; align-items: center; margin-top: 20px">
-        <input
-          type="text"
-          id="addInstanceInput"
-          placeholder="Digite o nome da instância..."
-        />
-        <button id="addInstanceButton">+</button>
-      </div>
-      <div id="instancesContainer"></div>
-    </div>
-
-    <div id="aboutPage">
-      <h1>Sobre</h1>
-      <div class="about-text">
-        Bem-vindo ao SN Explorer!<br /><br />
-        O SN Explorer é uma extensão desenvolvida para facilitar o trabalho de
-        profissionais que utilizam a plataforma ServiceNow. O objetivo é
-        centralizar informações essenciais e ferramentas úteis diretamente no
-        navegador.<br /><br />
-        <span>Com o SN Explorer, você pode:</span>
+    <!-- Menu de Navegação -->
+    <header>
+      <nav>
         <ul>
-          <li>Pesquisar rapidamente nos artigos do site ServiceNow Guru.</li>
-          <li>
-            Gerenciar suas instâncias de forma prática, adicionando, editando e
-            excluindo informações conforme necessário.
-          </li>
-          <li>
-            Acessar links úteis e recursos essenciais para otimizar o seu dia a
-            dia.
+          <li><a href="#" id="aboutPageLink" class="active">Sobre</a></li>
+          <li><a href="#" id="documentationPageLink">KnowNow</a></li>
+          <li><a href="#" id="instancesPageLink">Instâncias</a></li>
+          <li><a href="#" id="utilitiesPageLink">Utilitários</a></li>
+          <li class="settings-dropdown">
+            <a href="#" id="settingsIcon">
+              <img src=".\img\icons8-settings.svg" alt="Config" class="gear-icon" />
+            </a>
+            <ul class="settings-menu">
+              <li class="theme-dropdown">
+                <a href="#" id="popupThemeLink">Tema</a>
+                <ul class="theme-menu">
+                  <li><a href="#" id="darkThemeLink">Dark</a></li>
+                  <li><a href="#" id="lightThemeLink">Light</a></li>
+                </ul>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/marcusviniciux1/ufjf-dcc194-SNExplorer"
+                  target="_blank"
+                  >GitHub</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/marcusviniciux1/ufjf-dcc194-SNExplorer/issues"
+                  target="_blank"
+                  >Bugs</a
+                >
+              </li>
+            </ul>
           </li>
         </ul>
-      </div>
-    </div>
+      </nav>
+    </header>
 
-    <div id="addItemModal" class="modal">
-      <div class="modal-header">Adicionar/Editar Item</div>
-      <input
-        type="text"
-        id="itemNameInput"
-        placeholder="Nome do Item..."
-        required
-      />
-      <input
-        type="text"
-        id="itemLinkInput"
-        placeholder="URL do Item..."
-        required
-      />
-      <div class="modal-buttons">
-        <button id="cancelAddItemButton">Cancelar</button>
-        <button id="confirmAddItemButton">Salvar</button>
-      </div>
-    </div>
+    <main>
+      <!-- Sobre -->
+      <section id="aboutPage">
+        <h1>Sobre</h1>
+        <div class="about-text">
+          <p>Bem-vindo ao SN Explorer!</p>
+          <p>
+            O SN Explorer é uma extensão desenvolvida para facilitar o trabalho
+            de profissionais que utilizam a plataforma ServiceNow, centralizando
+            informações essenciais e oferecendo ferramentas úteis diretamente no
+            navegador.
+          </p>
+          <span>Com o SN Explorer, você pode:</span>
+          <ul>
+            <li>Pesquisar rapidamente nos artigos do site ServiceNow Guru</li>
+            <li>
+              Gerenciar suas instâncias de forma prática, adicionando, editando
+              e excluindo informações conforme necessário
+            </li>
+            <li>
+              Acessar links úteis e recursos essenciais para otimizar o seu dia
+              a dia
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- KnowNow -->
+      <section id="documentationPage">
+        <h1>
+          KnowNow
+          <span
+            class="info-icon"
+            title="Digite um termo de busca para encontrar artigos e informações relevantes no ServiceNow Guru. Utilize palavras-chave específicas para obter resultados mais precisos"
+            >i</span
+          >
+        </h1>
+        <div id="searchPage">
+          <form id="searchForm">
+            <input
+              type="text"
+              id="searchTerm"
+              placeholder="Palavra-chave..."
+              autocomplete="off"
+              required
+            />
+            <button type="submit" id="searchButton">
+              <img
+                src=".\img\icons8-magnifying-glass.svg"
+                alt="Buscar"
+                class="magnifying-glass"
+              />
+            </button>
+          </form>
+          <div id="loading">
+            <div class="spinner"></div>
+            <p>Buscando resultados...</p>
+          </div>
+          <div id="results"></div>
+        </div>
+      </section>
+
+      <!-- Instâncias -->
+      <section id="instancesPage">
+        <h1>
+          Suas instâncias
+          <span
+            class="info-icon"
+            title="Adicione e organize as instâncias de diferentes empresas com as quais você trabalha"
+            >i</span
+          >
+        </h1>
+        <div>
+          <input
+            type="text"
+            id="addInstanceInput"
+            placeholder="Nome da empresa..."
+          />
+          <button id="addInstanceButton">+</button>
+        </div>
+        <div id="instancesContainer"></div>
+      </section>
+
+      <!-- Utilitários -->
+      <section id="utilitiesPage">
+        <h1>Utilitários</h1>
+        <ul>
+          <li>
+            <a
+              href="https://developer.servicenow.com/dev.do#!/home"
+              target="_blank"
+              >PDI (Personal Developer Instance)</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://developer.servicenow.com/connect.do#!/share"
+              target="_blank"
+              >Update Sets e Scripts Compartilhados</a
+            >
+          </li>
+          <li>
+            <a href="https://www.servicenow.com/docs/pt-BR/" target="_blank"
+              >ServiceNow Docs</a
+            >
+          </li>
+          <li>
+            <a href="https://www.servicenow.com/community/" target="_blank"
+              >ServiceNow Community</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://www.examtopics.com/exams/servicenow/"
+              target="_blank"
+              >Questões para Certificações</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://nowlearning.servicenow.com/lxp/en/pages/career-journey?id=journey"
+              target="_blank"
+              >Carreiras ServiceNow</a
+            >
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <!-- Modais e Overlay -->
+    <!-- Overlay -->
     <div id="overlay" class="overlay"></div>
 
+    <!-- Modal para editar empresa -->
     <div id="editCategoryModal" class="modal">
-      <div class="modal-header">Editar Instância</div>
+      <div class="modal-header">Editar Empresa</div>
       <input
         type="text"
         id="categoryNameInput"
-        placeholder="Nome da Instância..."
+        placeholder="Nome da empresa..."
         required
       />
       <div class="modal-buttons">
         <button id="cancelEditCategoryButton">Cancelar</button>
         <button id="confirmEditCategoryButton">Salvar</button>
+      </div>
+    </div>
+
+    <!-- Modal para adicionar/editar instância -->
+    <div id="addItemModal" class="modal">
+      <div class="modal-header">Adicionar/Editar Instância</div>
+      <input
+        type="text"
+        id="itemNameInput"
+        placeholder="Nome da Instância..."
+        required
+      />
+      <input
+        type="text"
+        id="itemLinkInput"
+        placeholder="URL da Instância..."
+        required
+      />
+      <div class="modal-buttons">
+        <button id="cancelAddItemButton">Cancelar</button>
+        <button id="confirmAddItemButton">Salvar</button>
       </div>
     </div>
 

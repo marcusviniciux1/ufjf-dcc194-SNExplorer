@@ -94,6 +94,21 @@ button.deleteButton:hover {
   background-color: #6fa88e;
 }
 
+#documentationPage #searchButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 20px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #81b5a1;
+  color: white;
+  padding: 8px;
+}
+
+#documentationPage #searchButton:hover {
+  background-color: #6fa88e;
+}
+
 /* ------------------------- Páginas Ativas ------------------------- */
 #instancesPage,
 #aboutPage,
@@ -268,13 +283,14 @@ input[type="text"] {
 
 #documentationPage h1 {
   font-size: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 #documentationPage #searchPage p {
   font-size: 14px;
   line-height: 1.5;
   color: #333;
+  margin: 0;
 }
 
 #documentationPage form {
@@ -288,19 +304,12 @@ input[type="text"] {
 
 #searchTerm {
   outline: none;
+  position: relative;
+  top: -3px;
 }
 
 #searchTerm:focus {
   border: 1px solid #81b5a1;
-}
-
-#documentationPage #searchButton {
-  background-color: #81b5a1;
-  padding: 8px;
-}
-
-#documentationPage #searchButton:hover {
-  background-color: #6fa88e;
 }
 
 #documentationPage #loading {
@@ -354,7 +363,7 @@ input[type="text"] {
   height: 18px;
   line-height: 18px;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   color: #81b5a1;
   border: 1px solid #81b5a1;
@@ -372,6 +381,13 @@ input[type="text"] {
 .results-header {
   font-size: 12px;
   margin-bottom: 15px;
+}
+
+.magnifying-glass {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
 /* ------------------------- Página Instâncias ------------------------- */
@@ -508,16 +524,19 @@ body::-webkit-scrollbar-thumb:hover {
 .settings-menu li a {
   text-decoration: none;
   color: #333;
-  font-size: 14px;
+  font-size: 12px;
   display: block;
-  padding: 10px 15px;
+  padding: 5px 15px;
   border-radius: 5px;
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .settings-menu li a:hover {
   background-color: #81b5a1;
   color: white;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  padding: 5px 15px;
+  margin: 0px 3px;
 }
 
 .settings-dropdown:hover .settings-menu {
@@ -550,16 +569,19 @@ body::-webkit-scrollbar-thumb:hover {
 .theme-menu li a {
   text-decoration: none;
   color: #333;
-  font-size: 14px;
+  font-size: 12px;
   display: block;
-  padding: 10px 15px;
+  padding: 5px 15px;
   border-radius: 5px;
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .theme-menu li a:hover {
   background-color: #81b5a1;
   color: white;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  padding: 5px 15px;
+  margin: 0px 3px;
 }
 
 .theme-dropdown:hover .theme-menu {

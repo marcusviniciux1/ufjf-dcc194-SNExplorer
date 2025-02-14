@@ -1,46 +1,40 @@
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("SN Explorer instalado com sucesso!");
+  const menuItems = [
+    {
+      id: "insertHasRoleExactly",
+      title: "Verificar se o usuário possui exatamente um papel",
+    },
+    {
+      id: "insertHasAnyRoleExactly",
+      title: "Verificar se o usuário possui qualquer um dos papéis",
+    },
+    {
+      id: "insertIsMemberOf",
+      title: "Verificar se o usuário é membro de um grupo específico",
+    },
+    {
+      id: "insertIsMemberOfAny",
+      title: "Verificar se o usuário é membro de qualquer grupo",
+    },
+    {
+      id: "insertCancelRunningWorkflows",
+      title: "Cancelar workflows em execução",
+    },
+    { id: "insertRestartWorkflow", title: "Reiniciar workflow de um registro" },
+  ];
 
-  chrome.contextMenus.create({
-    id: "insertHasRoleExactly",
-    title: "Verificar se o usuário possui exatamente um papel",
-    contexts: ["editable"],
-  });
-
-  chrome.contextMenus.create({
-    id: "insertHasAnyRoleExactly",
-    title: "Verificar se o usuário possui qualquer um dos papéis",
-    contexts: ["editable"],
-  });
-
-  chrome.contextMenus.create({
-    id: "insertIsMemberOf",
-    title: "Verificar se o usuário é membro de um grupo específico",
-    contexts: ["editable"],
-  });
-
-  chrome.contextMenus.create({
-    id: "insertIsMemberOfAny",
-    title: "Verificar se o usuário é membro de qualquer grupo",
-    contexts: ["editable"],
-  });
-
-  chrome.contextMenus.create({
-    id: "insertCancelRunningWorkflows",
-    title: "Cancelar workflows em execução",
-    contexts: ["editable"],
-  });
-
-  chrome.contextMenus.create({
-    id: "insertRestartWorkflow",
-    title: "Reiniciar workflow de um registro",
-    contexts: ["editable"],
+  menuItems.forEach((item) => {
+    chrome.contextMenus.create({
+      id: item.id,
+      title: item.title,
+      contexts: ["editable"],
+    });
   });
 });
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-  const snippets = {
-    insertHasRoleExactly: `var user = 'sys_id_do_usuario';
+// Cada snippet corresponde a um item do menu de contexto
+const snippets = {
+  insertHasRoleExactly: `var user = 'sys_id_do_usuario';
 var role = 'role_name';
 
 var roleGr = new GlideRecord('sys_user_has_role');
@@ -56,8 +50,9 @@ if (roleGr.next()) {
 }
 gs.print('Usuário NÃO possui o papel especificado.');
 return false;`,
-    insertHasAnyRoleExactly: `var user = 'sys_id_do_usuario';
-var roles = 'role1,role2,role3';
+
+  insertHasAnyRoleExactly: `var user = 'sys_id_do_usuario';
+var roles = 'rol'e1',role2,role3';
 
 var roleGr = new GlideRecord('sys_user_has_role');
 roleGr.addQuery('user', user);
@@ -72,7 +67,8 @@ if (roleGr.next()) {
 }
 gs.print('Usuário NÃO possui nenhum dos papéis especificados.');
 return false;`,
-    insertIsMemberOf: `var user = 'sys_id_do_usuario';
+
+  insertIsMemberOf: `var user = 'sys_id_do_usuario';
 var group = 'group_name';
 
 var grpGr = new GlideRecord('sys_user_grmember');
@@ -87,7 +83,8 @@ if (grpGr.next()) {
 }
 gs.print('Usuário NÃO é membro do grupo especificado.');
 return false;`,
-    insertIsMemberOfAny: `var user = 'sys_id_do_usuario';
+
+  insertIsMemberOfAny: `var user = 'sys_id_do_usuario';
 var groups = 'group1,group2,group3';
 
 var grpGr = new GlideRecord('sys_user_grmember');
@@ -102,7 +99,8 @@ if (grpGr.next()) {
 }
 gs.print('Usuário NÃO é membro de nenhum dos grupos especificados.');
 return false;`,
-    insertCancelRunningWorkflows: `var ritmNumber = 'RITM001';
+
+  insertCancelRunningWorkflows: `var ritmNumber = 'RITM001';
 
 var gr = new GlideRecord("sc_req_item");
 gr.addQuery("number", ritmNumber);
@@ -117,7 +115,8 @@ if (gr.next()) {
 } else {
     gs.print('Nenhum RITM encontrado com o número especificado.');
 }`,
-    insertRestartWorkflow: `var recordSysId = 'sys_id_do_registro';
+
+  insertRestartWorkflow: `var recordSysId = 'sys_id_do_registro';
 
 var gr = new GlideRecord("change_request");
 gr.addQuery("sys_id", recordSysId);
@@ -129,22 +128,26 @@ if (gr.next()) {
 } else {
     gs.print('Nenhum registro encontrado com o sys_id especificado.');
 }`,
-  };
+};
 
-  if (snippets[info.menuItemId]) {
+//  Clique no menu de contexto
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  // Obtém o snippet correspondente ao ID do menu clicado
+  const snippet = snippets[info.menuItemId];
+  if (snippet) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      func: (snippet) => {
+      func: (snippetContent) => {
         const activeElement = document.activeElement;
         if (
           activeElement &&
           (activeElement.tagName === "TEXTAREA" ||
             activeElement.tagName === "INPUT")
         ) {
-          activeElement.value += snippet;
+          activeElement.value += snippetContent;
         }
       },
-      args: [snippets[info.menuItemId]],
+      args: [snippet],
     });
   }
 });
